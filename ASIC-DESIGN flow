@@ -1,0 +1,115 @@
+https://www.wevolver.com/article/the-ultimate-guide-to-asic-design-from-concept-to-production
+
+******************
+ASIC Design: A Step-by-Step Guide from Specification to Silicon
+ASIC design is the specialized practice of developing chips tailored to perform specific tasks with maximum efficiency, precision, and reliability—combining architectural insight, hardware expertise, and careful trade-offs to meet exact functional and system-level requirements.
+author avatar
+Ravi Rao
+Last updated on 30 May, 2025. 17 minutes read
+
+
+Follow
+
+ASIC Design: A Step-by-Step Guide from Specification to Silicon
+Topic
+
+Semiconductors
+
+Follow
+
+Tags
+
+design cycle
+electrical engineering
+electronics
+semiconductors
+No time now? Save for later.
+We only use your email to send this link. Privacy Policy.
+
+name@example.com
+
+Read Later
+
+Introduction
+From smartphones and wearables to automotive systems and AI accelerators, custom silicon is the silent workhorse powering today’s most advanced technologies. At the core of many such systems lies the Application-Specific Integrated Circuit (ASIC)—a chip purpose-built to perform a specific function with maximum efficiency.
+
+Recommended reading: What is an ASIC: A Comprehensive Guide to Understanding Application-Specific Integrated Circuits
+
+Unlike general-purpose processors or reconfigurable, programmable platforms like Field-Programmable Gate Arrays (FPGAs), custom ASICs are fixed in functionality once fabricated. While FPGAs are well-suited for prototyping and mixed-signal validation, ASICs offer a cost-effective, high-efficiency solution for dedicated applications. This fixed nature enables superior performance and energy efficiency but also makes the design process more complex, time-intensive, and costly. Successful ASIC development demands precise planning, a solid understanding of logic design and circuit design, and a well-structured flow that spans specification, coding, verification, and physical implementation.
+
+Recommended reading: ASIC vs FPGA: A Comprehensive Comparison
+
+This article provides a structured walkthrough of the ASIC design journey. We’ll explore each major stage, define key technical concepts, and highlight the decisions and trade-offs that shape the final silicon. Whether you're stepping into chip design or revisiting foundational principles, this guide aims to be both accessible and technically rigorous.
+
+Save time on research.
+Each week, receive the latest technical articles on Semiconductors straight to your inbox, so you can start the week informed.
+
+Email address
+name@example.com
+
+Follow
+
+No spam. Unsubscribe anytime. Privacy Policy
+
+Overview of the ASIC Design Process
+Designing an ASIC is not a linear activity—it’s a sequence of highly interdependent phases that involve specification, coding, simulation, optimization, physical layout, and finally, manufacturing handoff. Each stage feeds into the next, with feedback loops that allow designers to catch and fix issues early before they become costly.
+
+At a high level, the ASIC design flow includes:
+
+Capturing the design intent through detailed specifications
+
+Describing the functionality in hardware description languages like Verilog or Very High-Speed Integrated Circuit Hardware Definition Language (VHDL)
+
+Verifying that the logic behaves correctly
+
+Converting the Register Transfer Level (RTL) code into logic gates using synthesis tools
+
+Physically laying out the gates, interconnects, power, and clock networks
+
+Validating the final layout for timing, manufacturability, and power
+
+Sending the final layout to the foundry for fabrication
+
+Below is a flowchart that outlines this full process from concept to silicon:
+
+
+asic-design-flow
+Overview of the ASIC design flow, highlighting the distinction between front-end and back-end stages.
+Defining Design Goals
+Every ASIC design begins with a clear understanding of what the chip must accomplish and under what constraints. These early decisions shape the architecture, tools, and trade-offs that follow throughout the design process. 
+
+At the heart of this stage is a triad known as PPA—Performance, Power, and Area. These three parameters are tightly linked and must be balanced based on the target application.
+
+Performance: How fast the chip operates. Typically measured in clock frequency (MHz/GHz) or throughput (e.g., data processed per second).
+
+Power: How much energy the chip consumes, including:
+
+Dynamic power, from transistor switching activity during operation
+
+Static power, from leakage currents even when idle
+
+Area: The physical silicon space the design occupies, which impacts cost and yield during manufacturing.
+
+Improving one usually affects the others. For instance, increasing clock speed may require more logic gates, raising both area and power consumption. The designer’s job is to find the right balance, depending on whether speed, energy efficiency, or size is the top priority.
+
+Another early decision is selecting the technology node, which refers to the scale of transistors used in fabrication. Nodes are named by feature size—such as 90 nm, 28 nm, or 5 nm.
+
+Recommended reading: Understanding Transistors: What They Are and How They Work
+
+At smaller nodes (7 nm and below), chips are typically built using Fin Field-Effect Transistor (FinFET) structures instead of traditional planar Complementary Metal-Oxide-Semiconductor (CMOS) transistors. These advanced nodes require tighter design rules, specialized standard cell libraries, and more advanced Electronic Design Automation (EDA) tool support—increasing both design complexity and tool dependency.
+
+Smaller nodes provide:
+
+Higher transistor density
+
+Better power efficiency
+
+Faster switching speeds
+
+But they also bring:
+
+Greater design complexity
+
+Higher fabrication cost
+
+Stricter timing and layout rules
