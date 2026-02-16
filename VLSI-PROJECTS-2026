@@ -1,0 +1,560 @@
+What is an FPGA?
+*********************************
+https://www.fpga4student.com/2016/12/what-is-fpga-five-reasons-why-i-love-fpga.html
+*****************
+PROJECTS-2026
+******************* 
+****************************
+1.FPGA Projects
+2.Verilog Projects
+3.VHDL Projects
+
+**************
+What is FPGA? FPGA stands for Field Programmable Gate Array. Let's analyze the term:
+1. Field-Programmable: An FPGA is manufactured to be easily reconfigured by developers, designers or customers. To program an FPGA as a specific configuration, Verilog HDL or VHDL (Hardware Description Language) is used as the standard language for FPGA programming.
+2. Gate-Array: An FPGA consists of an array of programmable logic gates/ blocks such as AND, OR, XOR, NOT, memory elements, DSP components, etc., and reconfigurable interconnects which are to connect logic gates together for performing a specific function.
+What is FPGA
+
+Thus, FPGAs are nothing, but logic blocks and interconnects that can be programmable by Hardware Description Languages (Verilog HDL/ VHDL) to perform different complex functions. 
+In fact, FPGAs can be used to implement almost any DSP algorithm. Some FPGAs also obtain embedded soft-core processors such as Xilinx's MicroBlaze, Altera's Nios II, etc. so that we can use C, C++, etc. to program the processor like what we do with a microcontroller. Besides, the soft processors can communicate with hardware accelerators to speed up complex DSP operations so that we can obtain a better flexible embedded system for niche applications. 
+
+Let's take a very basic example on how to use an FPGA. Let's assume that you are designing a 1-bit full adder and you already obtained the logic diagram of the adder as shown in the figure below.
+What is FPGA
+As mentioned above, there are necessary logic gates on FPGA such as XOR, AND and OR in order to implement the above adder on FPGA. To demonstrate the operation of the adder on FPGA, either Verilog or VHDL can be easily used to connect those gates together as shown in the logic diagram of the adder.
+An example Verilog code for the adder:
+-- FPGA Project: What is an FPGA?
+-- Verilog example code for Adder on FPGA
+module fpga4student_adder(input A,B,Ci, output S,Co);  
+ wire tmp1,tmp2,tmp3;  //FPGA projects
+ xor u1(tmp1,A,B);  // Verilog projects
+ and u2(tmp2,A,B);  
+ and u3(tmp3,tmp1,Ci);  
+ or u4(Co,tmp2,tmp3);  
+ xor u5(S,tmp1,Ci);  
+ endmodule  
+An example VHDL code for the adder:
+-- FPGA projects: What is an FPGA?
+-- VHDL example code for adder on FPGA
+ library ieee;  
+ use ieee.std_logic_1164.all;  
+ entity fpga4student_Adder is  
+   port( A, B, Ci : in std_logic;  
+      S, Co : out std_logic);  
+ end fpga4student_Adder;  
+ architecture structural of fpga4student_Adder is  
+ signal tmp1, tmp2, tmp3: std_logic;  
+ begin  
+   tmp1 <= A xor B;  
+   tmp2 <= A and B;  
+   tmp3 <= tmp1 and Ci;  
+   Co <= tmp2 or tmp3;  
+   S <= tmp1 xor Ci;  
+ end structural;  
+
+The Verilog/ VHDL code for the adder simply does the "wiring" job by connecting the logic gates on FPGA together to be functional as a full adder. After verifying the code by simulation, we can synthesize, run the adder on FPGA and see how it works. For simulation, there are various available simulators that we can use, but for students, I would recommend you to use ModelSim of Mentor Graphics. You can see more simulators here. For FPGA synthesis and FPGA programming, you can use Quartus II for Altera's FPGA Boards and Xilinx ISE or Vivado for Xilinx's FPGA Boards. 
+As an FPGA designer for several years, here are five reasons why I love FPGA design:
+  
+
+
+  *****************
+  Verilog vs VHDL: Explain by Examples
+Last time, I presented in detail what actually FPGA programming is and how to get started with FPGA design. A brief history of Verilog and VHDL was also discussed. If you search for the difference between Verilog and VHDL, you will see many difference pages discussing this HDL language war, but most of them are short and not well-explained by examples for facilitating beginners or students' understanding.
+The difference between Verilog and VHDL will be explained in detail by examples in this post. The advantages and disadvantages of Verilog and VHDL will be also discussed.
+Verilog vs VHDL: Explain by Example
+
+HDL Modeling Capacity: Verilog vs VHDL
+First of all, let's discuss hardware modeling capacities of Verilog and VHDL since they are both hardware description languages for modeling hardware.
+The following graph shows the HDL modeling capacity of Verilog and VHDL in terms of behavioral levels of hardware abstraction. 
+Verilog vs VHDL Modeling capacity
+Graph source: Douglas J. Smith, "VHDL & Verilog Compared & Contrasted Plus Modeled Example Written in VHDL, Verilog, and C"
+Low-Level Modeling 
+As shown in the graph above, Verilog and VHDL are both capable of modeling hardware. However, in terms of low-level hardware modeling, Verilog is better than VHDL. It is reasonable because Verilog is originally created for modeling and simulating logic gates. In fact, Verilog has built-in primitives or low-level logic gates so that designers can instantiate the primitives in Verilog code while VHDL does not have it.
+Verilog's gate primitives: and, nand, or, nor, xor, xnor, buf, not, bufif0, notif0, bufif1, notif1, pullup, pulldown.
+Verilog's switch primitives: pmos, nmos, rpmos, rnmos, cmos, rcmos, tran, rtran, tranif0, rtranif0, tranif1, rtranif1.
+More importantly, Verilog supports User-Defined Primitives (UDP) so that designers can define their own cell primitives. This feature is especially necessary and popular for ASICs designers.
+Below are Verilog examples on how to instantiate gate primitives in Verilog code:
+or #5 u1(x,y,z);
+and #10 u2(i1,i2,i3);
+ADC_CIRCUIT u3(in1,out1,out2,clock); 
+// ADC_CIRCUIT is an User-Defined Primitive for 
+// Analog to Digital Converter for example.
+The VHDL equivalent of some low-level built-in gate primitives in Verilog can be achieved by using logic operators such as NOT, AND, NAND, OR, NOR, XOR, XNOR. 
+Below are examples of VHDL equivalent code for Verilog gate primitives:
+or u1(x,y,z); in Verilog <=> x <= y OR z; in VHDL
+and u2(i1,i2,i3); (Verilog) <=> i3 <= i2 AND i3; in VHDL
+To support UDP feature like in Verilog, VITAL (VHDL Initiative Towards ASIC Libraries) came out to enable ASIC designers creating their own cell primitives or ASIC libraries in VITAL-compliant VHDL as shown in the graph above. Even though, VHDL still may not achieve what Verilog can support for low-level hardware modeling. Thus, if I were an ASIC designer, I would prefer Verilog over VHDL.
+
+
+  **********************
+  What is FPGA Programming?
+Last time, I presented in detail what exactly an FPGA is and the advantage of FPGAs over ASICs and microcontrollers. FPGAs are nothing, but reconfigurable logic blocks and interconnects can be programmed by Hardware Description Language like Verilog/ VHDL to perform a specific functionality.
+Today, I will present what actually FPGA programming is, how to get started with FPGA programming, and FPGA programming design flow. The difference between FPGA programming and software programming will be also discussed.
+What is FPGA Programming?
+
+1. What is FPGA Programming?
+
+As mentioned in the previous FPGA post, FPGAs are nothing, but reconfigurable logic blocks (logic gates, memory elements, DSP components, etc.) and interconnects. FPGA programming is actually (re)configuring FPGAs using Hardware Description Language (Verilog/VHDL) to connect these logic blocks and interconnects in a way that it can perform a specific functionality (adders, multipliers, processors, filters, dividers, etc.). 
+
+2. What is the FPGA programming language?
+
+FPGA programming language is commonly called Hardware Description Language because it is actually used to describe or design hardware. The two major Hardware Description Languages are Verilog HDL and VHDL. 
+
+Verilog = "Verification" + "Logic", which originally created by P. Moorby, P. Goel, C.-L. Huang, and D. Warmke in 1984 to model gates and perform simulation in a logic simulator. Verilog was acquired by Cadence in 1990 and became IEEE Standard 1364 in 1995. Now, Verilog is commonly used for designing and verification of digital circuits and analog or mixed signal circuits as well. 
+
+VHDL is VHSIC (Very High Speed Integrated Circuits) Hardware Description Language which was initially developed by US Defense Department to research and develop very high speed integrated circuits in the 1980s.  VHDL became IEEE Standard 1076 in 1987. Now, VHDL is mostly used to model digital and analog mixed signal circuits such as FPGAs and ASICs. 
+
+Verilog HDL is similar to C programming language such as case-sensitive, keywords, operators, etc. VHDL is similar to Ada programming language since it was initially built based on Ada. The difference between Verilog and VHDL is presented here. Although there are similarities in syntax between HDLs (Verilog, VHDL) and software programming languages (C, Ada), FPGA programming is completely different from Software programming. 
+
+3. What is the key difference between FPGA programming and software programming?
+
+What is FPGA Programming?
+
+The explicit difference between FPGA programming and software programming is the way that its instructions are executed. In term of the execution of instructions, instructions in software programming (C, Ada, etc.) are sequentially executed while Verilog/ VHDL instructions in FPGA programming are mostly parallelly executed (except blocking assignment in Verilog and variable assignment within a process in VHDL). More importantly, FPGA programming or FPGA design is about designing digital logic circuits to define the behavior of FPGAs while software programming is about the execution of a sequence of sequential instructions to perform a specific behavior in software. 
+
+  ****************
+  How to load a text file or an image into FPGA
+This FPGA tutorial presents two ways to load a text file or an image into FPGA using Verilog or VHDL for image processing. It can be really useful for functional verifications in real-time FPGA image processing projects.
+
+The first way is to load a text file or an image into memory by reading the binary/hexadecimal file using Verilog/ VHDL code.
+It is noted that Verilog/VHDL cannot read image file directly, but they can read binary text files. Therefore, the image is required to be converted into binary text files and then use Verilog/VHDL to read it. An image can be easily converted to hexadecimal/ binary data using Matlab, C, Python, etc.
+
+For Verilog code, you can use $readmemh(for hexadecimal data) or $readmemb(for binary data) command to load a converted binary/hexadecimal text file directly. Example Verilog code for loading a text file or an image into FPGA using $readmemh: here. 
+
+For VHDL code, the TEXTIO package provides necessary commands to read binary text files. Details of the VHDL tutorial on reading image/text file in VHDL can be found here. Another example VHDL code for loading a text file or an image into FPGA: here. 
+
+The second way to load a text file or an image file into FPGA is to initialize it as the initial values of the block memory:
+1. If you are using Altera FPGA, you can use Mega-Function in the MegaWizard Plug-In Manager in Quartus II to initialize a block memory with the text file or image-converted binary text file in the MIF format. A sample .mif file is here.
+
+
+You can read more details the process how to use Megafunction in Altera as follows: User guide memory initialization
+
+2. If you are using Xilinx FPGA, use the Core Generator in Xilinx ISE or IP core in Vivado to generate a block memory with the initial content as the text file or image-converted binary text files. The initial data file must be in .coe format. A sample .coe file is here.
+
+
+  *************************
+  Basys 3 FPGA OV7670 Camera
+This FPGA project is about to help you interface the Basys 3 FPGA with OV7670 CMOS Camera in VHDL. It allows you to quickly start working on your DSP projects with real-time image/ video processing without worrying about the camera interface.  
+Basys 3 FPGA OV7670 Camera 
+The camera chip being used is a cheap CMOS camera (~3-5USD), named OV7670. The camera has an image array of 656x488 pixels, of which 640x480 pixels are active. This work is based on the design by Mike Field - details of his design for Nexys 2, and Zedboard in Xilinx ISE. The camera connections to Basys 3 FPGA are shown in the picture above.
+This project is to migrate the design in Xilinx ISE for Zedboard to Vivado Design Suite for Basys 3 FPGA with reconfigurable image sizes of 640x480, 320x240, and 160x120. 
+To interface with the OV7670 camera, followings are the most critical steps and modules:
+1. Camera configuration (OV7670_controller.vhd): To configure the OV7670 camera properly, check its datasheet to know which communication protocol it supports for configuration and capturing data. In this case, it is an I2C-like SSCB interface so an I2C code is needed to communicate with the camera, configure it, and get image data. More details of the I2C-like interface can be found at i2c_sender.vhd. To configure it properly, check the device control register list. Beside the configuration for the output format (RGB, QVGA, QCIF, etc.), RGB format (RGB565, RGB555, etc.), timing signals (PCLK, HREF, VSYNC),   the matrix coefficients including MTX1-MTX6 are important factors deciding the output image quality. More details of the control register values can be found at OV7670_registers.vhd.
+Basys 3 FPGA OV7670 Camera 
+I2C-like SCCB interface for communicating with the OV7670 camera
+
+2. Capturing image data (OV7670_capture.vhd): After configuring the camera, the next step is to capture the image data. One more time, check the datasheet of the camera to see the output timing diagram of your selected output format. For example, in this project, the RGB565 format is chosen so the output timing diagram for RGB565 is used for properly capturing the RGB data from the output signals of the camera. Based on the timing diagram as follows, the OV7670_capture.vhd is designed.
+Basys 3 FPGA OV7670 Camera 
+
+3. Saving Image Data (frame_buffer.vhd): After being able to configure the camera and capture the image data properly, the image data is stored in an intermediate memory. The problem with Basys 3 FPGA is that the memory size of Basys 3 FPGA is not enough for 640x480 image size. To use the same settings for the camera and VGA controller with a full 640x480 image size without exceeding the BRAM of Basys 3 FPGA, the trick is to save only one pixel every 4 pixels for the 640x480 size. Then, we can reduce the frame buffer size by 4 times to fit Basys 3 FPGA while having a full image size of 640x480 on a VGA monitor. For the 320x240 and 160x120 sizes, it is designed to display in 320x240 image size by pressing the Left button, whereas pressing the Right button on Basys 3 FPGA is to choose to display in 160x120 frame size on the VGA monitor.
+To do that, in Vivado, you can either upgrade the block memory file (frame_buffer.xco - generated by Core Generator in Xilinx ISE) to Vivado-suited LogiCore IP Block Memory v8.4 (frame_buffer.xci) while reducing the memory size by 4 times or use Block Memory Generator in the IP catalog of Vivado to create a new frame buffer with the depth of 131072 (17-bit address). 
+
+
+  ***********************
+  Image processing on FPGA using Verilog HDL
+This FPGA project is aimed to show in details how to process an image using Verilog from reading an input bitmap image (.bmp) in Verilog, processing and writing the processed result to an output bitmap image in Verilog. The full Verilog code for reading image, image processing, and writing image is provided.
+Image processing on FPGA using Verilog HDL
+
+In this FPGA Verilog project, some simple processing operations are implemented in Verilog such as inversion, brightness control and threshold operations. The image processing operation is selected by a "parameter.v" file and then, the processed image data are written to a bitmap image output.bmp for verification purposes. The image reading Verilog code operates as a Verilog model of an image sensor/ camera, which can be really helpful for functional verifications in real-time FPGA image processing projects. The image writing part is also extremely useful for testing as well when you want to see the output image in BMP format. In this project, I added some simple image processing code into the reading part to make an example of image processing, but you can easily remove it to get raw image data. All the related questions asked by students are answered at the bottom of this article.
+
+First of all, Verilog cannot read images directly. To read the .bmp image on in Verilog, the image is required to be converted from the bitmap format to the hexadecimal format. Below is a Matlab example code to convert a bitmap image to a .hex file. The input image size is 768x512 and the image .hex file includes R, G, B data of the bitmap image.
+b=imread('kodim24.bmp'); % 24-bit BMP image RGB888 
+
+k=1;
+for i=512:-1:1 % image is written from the last row to the first row
+for j=1:768
+a(k)=b(i,j,1);
+a(k+1)=b(i,j,2);
+a(k+2)=b(i,j,3);
+k=k+3;
+end
+end
+fid = fopen('kodim24.hex', 'wt');
+fprintf(fid, '%x\n', a);
+disp('Text file write done');disp(' ');
+fclose(fid);
+% fpga4student.com FPGA projects, Verilog projects, VHDL projects
+To read the image hexadecimal data file, Verilog uses this command: $readmemh or $readmemb if the image data is in a binary text file. After reading the image .hex file, the RGB image data are saved into memory and read out for processing.
+Below is the Verilog code to the image reading and processing part:
+/******************************************************************************/
+/******************  Module for reading and processing image     **************/
+/******************************************************************************/
+`include "parameter.v"       // Include definition file
+// fpga4student.com: FPGA projects for students
+// FPGA project: Image processing in Verilog
+module image_read
+#(
+  parameter     WIDTH  = 768,   // Image width
+         HEIGHT  = 512,   // Image height
+  INFILE  = "./img/kodim01.hex",  // image file
+  START_UP_DELAY = 100, // Delay during start up time
+  HSYNC_DELAY = 160,// Delay between HSYNC pulses 
+  VALUE= 100, // value for Brightness operation
+  THRESHOLD= 90, // Threshold value for Threshold operation
+  SIGN=1         // Sign value using for brightness operation
+  // SIGN = 0: Brightness subtraction           
+  // SIGN = 1: Brightness addition
+)
+(
+  input HCLK,          // clock     
+  input HRESETn,         // Reset (active low)
+  output VSYNC,        // Vertical synchronous pulse
+ // This signal is often a way to indicate that one entire image is transmitted.
+ // Just create and is not used, will be used once a video or many images are transmitted.
+  output reg HSYNC,        // Horizontal synchronous pulse
+ // An HSYNC indicates that one line of the image is transmitted.
+ // Used to be a horizontal synchronous signals for writing bmp file.
+  output reg [7:0]  DATA_R0,  // 8 bit Red data (even)
+  output reg [7:0]  DATA_G0,  // 8 bit Green data (even)
+  output reg [7:0]  DATA_B0,  // 8 bit Blue data (even)
+  output reg [7:0]  DATA_R1,  // 8 bit Red  data (odd)
+  output reg [7:0]  DATA_G1,  // 8 bit Green data (odd)
+  output reg [7:0]  DATA_B1,  // 8 bit Blue data (odd)
+  // Process and transmit 2 pixels in parallel to make the process faster, you can modify to transmit 1 pixels or more if needed
+  output     ctrl_done     // Done flag
+);   
+//-------------------------------------------------
+// Internal Signals
+//-------------------------------------------------
+parameter sizeOfWidth = 8;   // data width
+parameter sizeOfLengthReal = 1179648;   // image data : 1179648 bytes: 512 * 768 *3 
+// local parameters for FSM
+localparam  ST_IDLE  = 2'b00,// idle state
+   ST_VSYNC = 2'b01,// state for creating vsync 
+   ST_HSYNC = 2'b10,// state for creating hsync 
+   ST_DATA  = 2'b11;// state for data processing 
+reg [1:0] cstate,   // current state
+nstate;    // next state   
+reg start;         // start signal: trigger Finite state machine beginning to operate
+reg HRESETn_d;   // delayed reset signal: use to create start signal
+reg   ctrl_vsync_run; // control signal for vsync counter  
+reg [8:0] ctrl_vsync_cnt; // counter for vsync
+reg   ctrl_hsync_run; // control signal for hsync counter
+reg [8:0] ctrl_hsync_cnt; // counter  for hsync
+reg   ctrl_data_run; // control signal for data processing
+reg [7 : 0]   total_memory [0 : sizeOfLengthReal-1];// memory to store  8-bit data image
+// temporary memory to save image data : size will be WIDTH*HEIGHT*3
+integer temp_BMP   [0 : WIDTH*HEIGHT*3 - 1];   
+integer org_R  [0 : WIDTH*HEIGHT - 1];  // temporary storage for R component
+integer org_G  [0 : WIDTH*HEIGHT - 1]; // temporary storage for G component
+integer org_B  [0 : WIDTH*HEIGHT - 1]; // temporary storage for B component
+// counting variables
+integer i, j;
+// temporary signals for calculation: details in the paper.
+integer tempR0,tempR1,tempG0,tempG1,tempB0,tempB1; // temporary variables in contrast and brightness operation
+
+integer value,value1,value2,value4;// temporary variables in invert and threshold operation
+reg [ 9:0] row; // row index of the image
+reg [10:0] col; // column index of the image
+reg [18:0] data_count; // data counting for entire pixels of the image
+//-------------------------------------------------//
+// -------- Reading data from input file ----------//
+//-------------------------------------------------//
+initial begin
+    $readmemh(INFILE,total_memory,0,sizeOfLengthReal-1); // read file from INFILE
+end
+// use 3 intermediate signals RGB to save image data
+always@(start) begin
+    if(start == 1'b1) begin
+        for(i=0; i<WIDTH*HEIGHT*3 ; i=i+1) begin
+            temp_BMP[i] = total_memory[i+0][7:0]; 
+        end
+        
+        for(i=0; i<HEIGHT; i=i+1) begin
+            for(j=0; j<WIDTH; j=j+1) begin
+     // Matlab code writes image from the last row to the first row
+     // Verilog code does the same in reading to correctly save image pixels into 3 separate RGB mem
+                org_R[WIDTH*i+j] = temp_BMP[WIDTH*3*(HEIGHT-i-1)+3*j+0]; // save Red component
+                org_G[WIDTH*i+j] = temp_BMP[WIDTH*3*(HEIGHT-i-1)+3*j+1];// save Green component
+                org_B[WIDTH*i+j] = temp_BMP[WIDTH*3*(HEIGHT-i-1)+3*j+2];// save Blue component
+            end
+        end
+    end
+end
+//----------------------------------------------------//
+// ---Begin to read image file once reset was high ---//
+// ---by creating a starting pulse (start)------------//
+//----------------------------------------------------//
+always@(posedge HCLK, negedge HRESETn)
+begin
+    if(!HRESETn) begin
+        start <= 0;
+  HRESETn_d <= 0;
+    end
+    else begin           //          ______     
+        HRESETn_d <= HRESETn;       //        |  |
+  if(HRESETn == 1'b1 && HRESETn_d == 1'b0)  // __0___| 1 |___0____ : starting pulse
+   start <= 1'b1;
+  else
+   start <= 1'b0;
+    end
+end
+//-----------------------------------------------------------------------------------------------//
+// Finite state machine for reading RGB888 data from memory and creating hsync and vsync pulses --//
+//-----------------------------------------------------------------------------------------------//
+always@(posedge HCLK, negedge HRESETn)
+begin
+    if(~HRESETn) begin
+        cstate <= ST_IDLE;
+    end
+    else begin
+        cstate <= nstate; // update next state 
+    end
+end
+//-----------------------------------------//
+//--------- State Transition --------------//
+//-----------------------------------------//
+// IDLE . VSYNC . HSYNC . DATA
+always @(*) begin
+ case(cstate)
+  ST_IDLE: begin
+   if(start)
+    nstate = ST_VSYNC;
+   else
+    nstate = ST_IDLE;
+  end   
+  ST_VSYNC: begin
+   if(ctrl_vsync_cnt == START_UP_DELAY) 
+    nstate = ST_HSYNC;
+   else
+    nstate = ST_VSYNC;
+  end
+  ST_HSYNC: begin
+   if(ctrl_hsync_cnt == HSYNC_DELAY) 
+    nstate = ST_DATA;
+   else
+    nstate = ST_HSYNC;
+  end  
+  ST_DATA: begin
+   if(ctrl_done)
+    nstate = ST_IDLE;
+   else begin
+    if(col == WIDTH - 2)
+     nstate = ST_HSYNC;
+    else
+     nstate = ST_DATA;
+   end
+  end
+ endcase
+end
+// ------------------------------------------------------------------- //
+// --- counting for time period of vsync, hsync, data processing ----  //
+// ------------------------------------------------------------------- //
+always @(*) begin
+ ctrl_vsync_run = 0;
+ ctrl_hsync_run = 0;
+ ctrl_data_run  = 0;
+ case(cstate)
+  ST_VSYNC:  begin ctrl_vsync_run = 1; end  // trigger counting for vsync
+  ST_HSYNC:  begin ctrl_hsync_run = 1; end // trigger counting for hsync
+  ST_DATA:  begin ctrl_data_run  = 1; end // trigger counting for data processing
+ endcase
+end
+// counters for vsync, hsync
+always@(posedge HCLK, negedge HRESETn)
+begin
+    if(~HRESETn) begin
+        ctrl_vsync_cnt <= 0;
+  ctrl_hsync_cnt <= 0;
+    end
+    else begin
+        if(ctrl_vsync_run)
+   ctrl_vsync_cnt <= ctrl_vsync_cnt + 1; // counting for vsync
+  else 
+   ctrl_vsync_cnt <= 0;
+   
+        if(ctrl_hsync_run)
+   ctrl_hsync_cnt <= ctrl_hsync_cnt + 1; // counting for hsync  
+  else
+   ctrl_hsync_cnt <= 0;
+    end
+end
+// counting column and row index  for reading memory 
+always@(posedge HCLK, negedge HRESETn)
+begin
+    if(~HRESETn) begin
+        row <= 0;
+  col <= 0;
+    end
+ else begin
+  if(ctrl_data_run) begin
+   if(col == WIDTH - 2) begin
+    row <= row + 1;
+   end
+   if(col == WIDTH - 2) 
+    col <= 0;
+   else 
+    col <= col + 2; // reading 2 pixels in parallel
+  end
+ end
+end
+//-------------------------------------------------//
+//----------------Data counting---------- ---------//
+//-------------------------------------------------//
+always@(posedge HCLK, negedge HRESETn)
+begin
+    if(~HRESETn) begin
+        data_count <= 0;
+    end
+    else begin
+        if(ctrl_data_run)
+   data_count <= data_count + 1;
+    end
+end
+assign VSYNC = ctrl_vsync_run;
+assign ctrl_done = (data_count == 196607)? 1'b1: 1'b0; // done flag
+//-------------------------------------------------//
+//-------------  Image processing   ---------------//
+//-------------------------------------------------//
+always @(*) begin
+ 
+ HSYNC   = 1'b0;
+ DATA_R0 = 0;
+ DATA_G0 = 0;
+ DATA_B0 = 0;                                       
+ DATA_R1 = 0;
+ DATA_G1 = 0;
+ DATA_B1 = 0;                                         
+ if(ctrl_data_run) begin
+  
+  HSYNC   = 1'b1;
+  `ifdef BRIGHTNESS_OPERATION 
+  /**************************************/  
+  /*  BRIGHTNESS ADDITION OPERATION */
+  /**************************************/
+  if(SIGN == 1) begin
+  // R0
+  tempR0 = org_R[WIDTH * row + col   ] + VALUE;
+  if (tempR0 > 255)
+   DATA_R0 = 255;
+  else
+   DATA_R0 = org_R[WIDTH * row + col   ] + VALUE;
+  // R1 
+  tempR1 = org_R[WIDTH * row + col+1   ] + VALUE;
+  if (tempR1 > 255)
+   DATA_R1 = 255;
+  else
+   DATA_R1 = org_R[WIDTH * row + col+1   ] + VALUE; 
+  // G0 
+  tempG0 = org_G[WIDTH * row + col   ] + VALUE;
+  if (tempG0 > 255)
+   DATA_G0 = 255;
+  else
+   DATA_G0 = org_G[WIDTH * row + col   ] + VALUE;
+  tempG1 = org_G[WIDTH * row + col+1   ] + VALUE;
+  if (tempG1 > 255)
+   DATA_G1 = 255;
+  else
+   DATA_G1 = org_G[WIDTH * row + col+1   ] + VALUE;  
+  // B
+  tempB0 = org_B[WIDTH * row + col   ] + VALUE;
+  if (tempB0 > 255)
+   DATA_B0 = 255;
+  else
+   DATA_B0 = org_B[WIDTH * row + col   ] + VALUE;
+  tempB1 = org_B[WIDTH * row + col+1   ] + VALUE;
+  if (tempB1 > 255)
+   DATA_B1 = 255;
+  else
+   DATA_B1 = org_B[WIDTH * row + col+1   ] + VALUE;
+ end
+ else begin
+ /**************************************/  
+ /* BRIGHTNESS SUBTRACTION OPERATION */
+ /**************************************/
+  // R0
+  tempR0 = org_R[WIDTH * row + col   ] - VALUE;
+  if (tempR0 < 0)
+   DATA_R0 = 0;
+  else
+   DATA_R0 = org_R[WIDTH * row + col   ] - VALUE;
+  // R1 
+  tempR1 = org_R[WIDTH * row + col+1   ] - VALUE;
+  if (tempR1 < 0)
+   DATA_R1 = 0;
+  else
+   DATA_R1 = org_R[WIDTH * row + col+1   ] - VALUE; 
+  // G0 
+  tempG0 = org_G[WIDTH * row + col   ] - VALUE;
+  if (tempG0 < 0)
+   DATA_G0 = 0;
+  else
+   DATA_G0 = org_G[WIDTH * row + col   ] - VALUE;
+  tempG1 = org_G[WIDTH * row + col+1   ] - VALUE;
+  if (tempG1 < 0)
+   DATA_G1 = 0;
+  else
+   DATA_G1 = org_G[WIDTH * row + col+1   ] - VALUE;  
+  // B
+  tempB0 = org_B[WIDTH * row + col   ] - VALUE;
+  if (tempB0 < 0)
+   DATA_B0 = 0;
+  else
+   DATA_B0 = org_B[WIDTH * row + col   ] - VALUE;
+  tempB1 = org_B[WIDTH * row + col+1   ] - VALUE;
+  if (tempB1 < 0)
+   DATA_B1 = 0;
+  else
+   DATA_B1 = org_B[WIDTH * row + col+1   ] - VALUE;
+  end
+  `endif
+         /**************************************/  
+  /*  INVERT_OPERATION       */
+  /**************************************/
+  `ifdef INVERT_OPERATION 
+   value2 = (org_B[WIDTH * row + col  ] + org_R[WIDTH * row + col  ] +org_G[WIDTH * row + col  ])/3;
+   DATA_R0=255-value2;
+   DATA_G0=255-value2;
+   DATA_B0=255-value2;
+   value4 = (org_B[WIDTH * row + col+1  ] + org_R[WIDTH * row + col+1  ] +org_G[WIDTH * row + col+1  ])/3;
+   DATA_R1=255-value4;
+   DATA_G1=255-value4;
+   DATA_B1=255-value4;  
+  `endif
+  /**************************************/  
+  /********THRESHOLD OPERATION  *********/
+  /**************************************/
+  `ifdef THRESHOLD_OPERATION
+  value = (org_R[WIDTH * row + col   ]+org_G[WIDTH * row + col   ]+org_B[WIDTH * row + col   ])/3;
+  if(value > THRESHOLD) begin
+   DATA_R0=255;
+   DATA_G0=255;
+   DATA_B0=255;
+  end
+  else begin
+   DATA_R0=0;
+   DATA_G0=0;
+   DATA_B0=0;
+  end
+  value1 = (org_R[WIDTH * row + col+1   ]+org_G[WIDTH * row + col+1   ]+org_B[WIDTH * row + col+1   ])/3;
+  if(value1 > THRESHOLD) begin
+   DATA_R1=255;
+   DATA_G1=255;
+   DATA_B1=255;
+  end
+  else begin
+   DATA_R1=0;
+   DATA_G1=0;
+   DATA_B1=0;
+  end  
+  `endif
+ end
+end
+
+endmodule
+The image processing operation is selected in the following "parameter.v" file. To change the processing operation, just switch the comment line.
+/***************************************/
+ /****************** Definition file ********/ 
+/************** **********************************************/ 
+`define INPUTFILENAME "your_image.hex" // Input file name 
+`define OUTPUTFILENAME "output.bmp" // Output file name 
+// Choose the operation of code by delete 
+// in the beginning of the selected line 
+//`define BRIGHTNESS_OPERATION 
+ `define INVERT_OPERATION 
+//`define THRESHOLD_OPERATION
+// fpga4student.com FPGA projects, Verilog projects, VHDL projects
+
+
+  
+
+  
