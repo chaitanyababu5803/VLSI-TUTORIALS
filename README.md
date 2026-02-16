@@ -2,9 +2,10 @@ VLSI TUTORIALS::
 ******************
 Difference Between VLSI and Embedded System
 VLSI & Embedded System
-<img width="225" height="225" alt="image" src="https://github.com/user-attachments/assets/7dcac990-782b-438b-b1db-1647d99aba86" />
+<img width="350" height="350" alt="image" src="https://github.com/user-attachments/assets/7dcac990-782b-438b-b1db-1647d99aba86" />
+
 Difference Between VLSI and Embedded Systems
-Last Updated : 23 Jul, 2025
+
 Very Large Scale Integrated Circuits (VLSI) and Embedded Systems are two important areas of rapid development and performance required to advance instantaneous innovation. Although both are important to the development and operation of electronics, each focuses on different aspects of innovation.
 
 What is VLSI?
