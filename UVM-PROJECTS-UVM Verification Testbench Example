@@ -1,0 +1,506 @@
+UVM Verification Testbench Example
+*****************************
+https://www.chipverify.com/uvm/uvm-verification-testbench-example
+*************************
+Design
+Test Plan
+Testbench
+Sequence Item
+Sequence
+Driver
+Monitor
+Scoreboard
+Agent and Environment
+Test
+Interface
+Testbench Top
+Design v1.0
+Design v1.1
+Design v1.2
+Design v1.3
+Design v1.4
+This session is a real example of how design and verification happens in the real industry. We'll go through the design specification, write a test plan that details how the design will be tested, develop a UVM testbench structure and verify the design.
+
+Design
+This is a simple pattern detector written in Verilog to identify a pattern in a stream of input values. On every clock, there is a new input to the design and when it matches the pattern '1011', the output out will be set to 1. For this purpose, the design is implemented as a state machine which moves through different stages as it progresses through pattern identification sequence.
+
+Test Plan
+The verification testbench will be developed in UVM and has the following block diagram:
+
+The sequence generates a random stream of input values that will be passed to the driver as a uvm_sequence_item
+The driver receives the item and drives it to the DUT through a virtual interface
+The monitor captures values on the DUT's input and output pin, creates a packet and sends to the scoreboard
+The scoreboard is primarily responsible for checking the functional correctness of the design based on the input and output values it receives from the monitor.
+The input stream of values has to be random for maximum efficiency. It should be able to catch the following scenarios:
+
+011011011010
+101011100
+111011011
+Testbench
+Sequence Item
+// This is the base transaction object that will be used
+// in the environment to initiate new transactions and
+// capture transactions at DUT interface
+class Item extends uvm_sequence_item;
+  `uvm_object_utils(Item)
+  rand bit  in;
+  bit 		out;
+
+  virtual function string convert2str();
+    return $sformatf("in=%0d, out=%0d", in, out);
+  endfunction
+
+  function new(string name = "Item");
+    super.new(name);
+  endfunction
+
+  constraint c1 { in dist {0:/20, 1:/80}; }
+endclass
+Sequence
+class gen_item_seq extends uvm_sequence;
+  `uvm_object_utils(gen_item_seq)
+  function new(string name="gen_item_seq");
+    super.new(name);
+  endfunction
+
+  rand int num; 	// Config total number of items to be sent
+
+  constraint c1 { soft num inside {[10:50]}; }
+
+  virtual task body();
+    for (int i = 0; i < num; i ++) begin
+    	Item m_item = Item::type_id::create("m_item");
+    	start_item(m_item);
+    	m_item.randomize();
+      `uvm_info("SEQ", $sformatf("Generate new item: %s", m_item.convert2str()), UVM_HIGH)
+      	finish_item(m_item);
+    end
+    `uvm_info("SEQ", $sformatf("Done generation of %0d items", num), UVM_LOW)
+  endtask
+endclass
+Driver
+// The driver is responsible for driving transactions to the DUT
+// All it does is to get a transaction from the mailbox if it is
+// available and drive it out into the DUT interface.
+class driver extends uvm_driver #(Item);
+  `uvm_component_utils(driver)
+  function new(string name = "driver", uvm_component parent=null);
+    super.new(name, parent);
+  endfunction
+
+  virtual des_if vif;
+
+  virtual function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    if (!uvm_config_db#(virtual des_if)::get(this, "", "des_vif", vif))
+      `uvm_fatal("DRV", "Could not get vif")
+  endfunction
+
+  virtual task run_phase(uvm_phase phase);
+    super.run_phase(phase);
+    forever begin
+      Item m_item;
+      `uvm_info("DRV", $sformatf("Wait for item from sequencer"), UVM_HIGH)
+      seq_item_port.get_next_item(m_item);
+      drive_item(m_item);
+      seq_item_port.item_done();
+    end
+  endtask
+
+  virtual task drive_item(Item m_item);
+    @(vif.cb);
+      vif.cb.in <= m_item.in;
+  endtask
+endclass
+Monitor
+// The monitor has a virtual interface handle with which
+// it can monitor the events happening on the interface.
+// It sees new transactions and then captures information
+// into a packet and sends it to the scoreboard
+// using another mailbox.
+class monitor extends uvm_monitor;
+  `uvm_component_utils(monitor)
+  function new(string name="monitor", uvm_component parent=null);
+    super.new(name, parent);
+  endfunction
+
+  uvm_analysis_port  #(Item) mon_analysis_port;
+  virtual des_if vif;
+
+  virtual function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    if (!uvm_config_db#(virtual des_if)::get(this, "", "des_vif", vif))
+      `uvm_fatal("MON", "Could not get vif")
+    mon_analysis_port = new ("mon_analysis_port", this);
+  endfunction
+
+  virtual task run_phase(uvm_phase phase);
+    super.run_phase(phase);
+    // This task monitors the interface for a complete
+    // transaction and writes into analysis port when complete
+    forever begin
+      @ (vif.cb);
+			if (vif.rstn) begin
+				Item item = Item::type_id::create("item");
+				item.in = vif.in;
+				item.out = vif.cb.out;
+				mon_analysis_port.write(item);
+              `uvm_info("MON", $sformatf("Saw item %s", item.convert2str()), UVM_HIGH)
+			end
+    end
+  endtask
+endclass
+Scoreboard
+// The scoreboard is responsible to check design functionality and
+// should track input and try to match the pattern and ensure that
+// the design has found the pattern as well. The scoreboard should
+// flag an error if the design didnt find the pattern and ensure
+// that "out" remains zero, and if the design found the pattern,
+// "out" is set to the correct value.
+class scoreboard extends uvm_scoreboard;
+  `uvm_component_utils(scoreboard)
+  function new(string name="scoreboard", uvm_component parent=null);
+    super.new(name, parent);
+  endfunction
+
+  	bit[`LENGTH-1:0] 	ref_pattern;
+  	bit[`LENGTH-1:0] 	act_pattern;
+	bit 				exp_out;
+
+  uvm_analysis_imp #(Item, scoreboard) m_analysis_imp;
+
+  virtual function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+
+    m_analysis_imp = new("m_analysis_imp", this);
+    if (!uvm_config_db#(bit[`LENGTH-1:0])::get(this, "*", "ref_pattern", ref_pattern))
+			`uvm_fatal("SCBD", "Did not get ref_pattern !")
+  endfunction
+
+  virtual function write(Item item);
+    act_pattern = act_pattern << 1 | item.in;
+
+    `uvm_info("SCBD", $sformatf("in=%0d out=%0d ref=0b%0b act=0b%0b",
+                               item.in, item.out, ref_pattern, act_pattern), UVM_LOW)
+
+    // Always check that expected out value is the actual observed value
+    // Since it takes 1 clock for out to be updated after pattern match,
+    // do the check first and then update exp_out value
+    if (item.out != exp_out) begin
+      `uvm_error("SCBD", $sformatf("ERROR ! out=%0d exp=%0d",
+                                   				item.out, exp_out))
+    end else begin
+      `uvm_info("SCBD", $sformatf("PASS ! out=%0d exp=%0d",
+                                  item.out, exp_out), UVM_HIGH)
+    end
+
+    // If current index has reached the full pattern, then set exp_out to be 1
+    // which will be checked in the next clock. If pattern is not complete, keep
+    // exp_out to zero
+    if (!(ref_pattern ^ act_pattern)) begin
+      `uvm_info("SCBD", $sformatf("Pattern found to match, next out should be 1"), UVM_LOW)
+		exp_out = 1;
+    end else begin
+      exp_out = 0;
+    end
+
+  endfunction
+endclass
+Agent and Environment
+// Create an intermediate container called "agent" to hold
+// driver, monitor and sequencer
+class agent extends uvm_agent;
+  `uvm_component_utils(agent)
+  function new(string name="agent", uvm_component parent=null);
+    super.new(name, parent);
+  endfunction
+
+  driver 		d0; 		// Driver handle
+  monitor 		m0; 		// Monitor handle
+  uvm_sequencer #(Item)	s0; 		// Sequencer Handle
+
+  virtual function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    s0 = uvm_sequencer#(Item)::type_id::create("s0", this);
+    d0 = driver::type_id::create("d0", this);
+    m0 = monitor::type_id::create("m0", this);
+  endfunction
+
+  virtual function void connect_phase(uvm_phase phase);
+    super.connect_phase(phase);
+    d0.seq_item_port.connect(s0.seq_item_export);
+  endfunction
+
+endclass
+
+// The environment is a container object simply to hold
+// all verification  components together. This environment can
+// then be reused later and all components in it would be
+// automatically connected and available for use
+class env extends uvm_env;
+  `uvm_component_utils(env)
+  function new(string name="env", uvm_component parent=null);
+    super.new(name, parent);
+  endfunction
+
+  agent 		a0; 		// Agent handle
+  scoreboard	sb0; 		// Scoreboard handle
+
+  virtual function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    a0 = agent::type_id::create("a0", this);
+    sb0 = scoreboard::type_id::create("sb0", this);
+  endfunction
+
+  virtual function void connect_phase(uvm_phase phase);
+    super.connect_phase(phase);
+    a0.m0.mon_analysis_port.connect(sb0.m_analysis_imp);
+  endfunction
+endclass
+Test
+Since we want to be able to reuse the same verification environment to detect designs with patterns other than "1011", it has to be developed with enough flexibility to easily change the pattern. For this reason, we have chose to represent the pattern as an N-bit value where N is defined by the macro LENGTH as 4. Also, the base test sets up the environment, config_db and other parameters for the test so that derived tests simply have to provide a new pattern if required along with the total number of data items to be sent to the DUT as input stream. Number of data items to DUT is a randomized value that is part of the sequence and randomized to a different value in the derived test.
+
+// Test class instantiates the environment and starts it.
+class base_test extends uvm_test;
+  `uvm_component_utils(base_test)
+  function new(string name = "base_test", uvm_component parent=null);
+    super.new(name, parent);
+  endfunction
+
+  env  				e0;
+  bit[`LENGTH-1:0]  pattern = 4'b1011;
+  gen_item_seq 		seq;
+  virtual  	des_if 	vif;
+
+  virtual function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+
+    // Create the environment
+    e0 = env::type_id::create("e0", this);
+
+    // Get virtual IF handle from top level and pass it to everything
+    // in env level
+    if (!uvm_config_db#(virtual des_if)::get(this, "", "des_vif", vif))
+      `uvm_fatal("TEST", "Did not get vif")
+    uvm_config_db#(virtual des_if)::set(this, "e0.a0.*", "des_vif", vif);
+
+    // Setup pattern queue and place into config db
+    uvm_config_db#(bit[`LENGTH-1:0])::set(this, "*", "ref_pattern", pattern);
+
+    // Create sequence and randomize it
+    seq = gen_item_seq::type_id::create("seq");
+    seq.randomize();
+  endfunction
+
+  virtual task run_phase(uvm_phase phase);
+    phase.raise_objection(this);
+    apply_reset();
+    seq.start(e0.a0.s0);
+    #200;
+    phase.drop_objection(this);
+  endtask
+
+  virtual task apply_reset();
+    vif.rstn <= 0;
+    vif.in <= 0;
+    repeat(5) @ (posedge vif.clk);
+    vif.rstn <= 1;
+    repeat(10) @ (posedge vif.clk);
+  endtask
+endclass
+
+class test_1011 extends base_test;
+  `uvm_component_utils(test_1011)
+  function new(string name="test_1011", uvm_component parent=null);
+    super.new(name, parent);
+  endfunction
+
+  virtual function void build_phase(uvm_phase phase);
+    pattern = 4'b1011;
+    super.build_phase(phase);
+    seq.randomize() with { num inside {[300:500]}; };
+  endfunction
+endclass
+Interface
+// The interface allows verification components to access DUT signals
+// using a virtual interface handle
+interface des_if (input bit clk);
+  	logic rstn;
+	logic in;
+	logic out;
+
+	clocking cb @(posedge clk);
+      default input #1step output #3ns;
+		input out;
+		output in;
+	endclocking
+endinterface
+Testbench Top
+module tb;
+  reg clk;
+
+  always #10 clk =~ clk;
+  des_if _if (clk);
+
+	det_1011 u0 	( .clk(clk),
+                     .rstn(_if.rstn),
+                     .in(_if.in),
+                     .out(_if.out));
+
+
+  initial begin
+    clk <= 0;
+    uvm_config_db#(virtual des_if)::set(null, "uvm_test_top", "des_vif", _if);
+    run_test("test_1011");
+  end
+endmodule
+Design v1.0
+module det_1011 ( input clk,
+                  input rstn,
+                  input in,
+                  output out );
+
+  parameter IDLE 	= 0,
+  			S1 		= 1,
+  			S10 	= 2,
+  			S101 	= 3,
+  			S1011 	= 4;
+
+  reg [2:0] cur_state, next_state;
+
+  assign out = cur_state == S1011 ? 1 : 0;
+
+  always @ (posedge clk) begin
+    if (!rstn)
+      	cur_state <= IDLE;
+     else
+     	cur_state <= next_state;
+  end
+
+  always @ (cur_state or in) begin
+    case (cur_state)
+      IDLE : begin
+        if (in) next_state = S1;
+        else next_state = IDLE;
+      end
+
+      S1: begin
+        if (in) next_state = IDLE;
+        else 	next_state = S10;
+      end
+
+      S10 : begin
+        if (in) next_state = S101;
+        else 	next_state = IDLE;
+      end
+
+      S101 : begin
+        if (in) next_state = S1011;
+        else 	next_state = IDLE;
+      end
+
+      S1011: begin
+       	next_state = IDLE;
+      end
+    endcase
+  end
+endmodule
+When we simulate this design in our verification environment, we can see that there are many errors.
+
+Discover more
+Electronics design resources
+FPGA development board
+VLSI design tutorials
+Output
+...
+UVM_INFO testbench.sv(149) @ 350: uvm_test_top.e0.sb0 [SCBD] in=1 out=0 ref=0b1011 act=0b111
+UVM_INFO testbench.sv(149) @ 370: uvm_test_top.e0.sb0 [SCBD] in=1 out=0 ref=0b1011 act=0b1111
+UVM_INFO testbench.sv(149) @ 390: uvm_test_top.e0.sb0 [SCBD] in=0 out=0 ref=0b1011 act=0b1110
+UVM_INFO testbench.sv(149) @ 410: uvm_test_top.e0.sb0 [SCBD] in=1 out=0 ref=0b1011 act=0b1101
+UVM_INFO testbench.sv(149) @ 430: uvm_test_top.e0.sb0 [SCBD] in=1 out=0 ref=0b1011 act=0b1011
+UVM_INFO testbench.sv(166) @ 430: uvm_test_top.e0.sb0 [SCBD] Pattern found to match, next out should be 1
+UVM_INFO testbench.sv(149) @ 450: uvm_test_top.e0.sb0 [SCBD] in=1 out=0 ref=0b1011 act=0b111
+UVM_ERROR testbench.sv(156) @ 450: uvm_test_top.e0.sb0 [SCBD] ERROR ! out=0 exp=1
+UVM_INFO testbench.sv(149) @ 470: uvm_test_top.e0.sb0 [SCBD] in=0 out=0 ref=0b1011 act=0b1110
+...
+** Report counts by severity
+UVM_INFO :  527
+UVM_WARNING :    0
+UVM_ERROR :   19
+UVM_FATAL :    0
+** Report counts by id
+[RNTST]     1
+[SCBD]   542
+[SEQ]     1
+[TEST_DONE]     1
+[UVM/RELNOTES]     1
+Discover more
+Digital logic fundamentals
+Boolean algebra guide
+Chip design consulting service
+The verification engineer debugs the error to confirm that these are design bugs and are reported back to the designer. The design debugs his design to find the root cause of errors, assumes he has fixed all errors and releases a second version of the design.
+
+Click here to see the log for design v1.0
+
+Design v1.1
+module det_1011 ( input clk,
+                  input rstn,
+                  input in,
+                  output out );
+
+  parameter IDLE 	= 0,
+  			S1 		= 1,
+  			S10 	= 2,
+  			S101 	= 3,
+  			S1011 	= 4;
+
+  reg [2:0] cur_state, next_state;
+
+  assign out = cur_state == S1011 ? 1 : 0;
+
+  always @ (posedge clk) begin
+    if (!rstn)
+      	cur_state <= IDLE;
+     else
+     	cur_state <= next_state;
+  end
+
+  always @ (cur_state or in) begin
+    case (cur_state)
+      IDLE : begin
+        if (in) next_state = S1;
+        else next_state = IDLE;
+      end
+
+      S1: begin
+        // Designer assumed that if next input is 1,
+        // state should start from IDLE. But he forgot
+        // that it should stay in same state since it
+        // already matched part of the pattern which
+        // is the starting "1"
+        if (in) next_state = S1;        // Fix for bug found in v1.0
+        else 	next_state = S10;
+      end
+
+      S10 : begin
+        if (in) next_state = S101;
+        else 	next_state = IDLE;
+      end
+
+      S101 : begin
+        if (in) next_state = S1011;
+        else 	next_state = IDLE;
+      end
+
+      S1011: begin
+       	next_state = IDLE;
+      end
+    endcase
+  end
+endmodule
+The verification engineer reruns the same test using the same verification environment on the second design, and finds out that the number of errors have decreased but not zero yet.
+
+Discover more
+VLSI design conference pass
+Synthesis tool license
+Power analysis software
