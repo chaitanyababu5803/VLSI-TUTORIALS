@@ -1,0 +1,734 @@
+******************************
+What is SystemVerilog ?
+Hardware Description Languages (HDL) like Verilog and VHDL are used to describe hardware behavior so that it can be converted to digital blocks made up of combinational gates and sequential elements. In order to verify that the hardware description in HDL is correct, there is a need for a language with more features in OOP that will support complicated testing procedures and is often called a Hardware Verification Language.
+
+SystemVerilog is an extension of Verilog with many such verification features that allow engineers to verify the design using complex testbench structures and random stimuli in simulation.
+
+What about Vera, e, and other similar HVL ?
+They have been in use for some time. SystemVerilog can be considered an extension of Verilog (the most popular HDL), and it makes sense to verify a Verilog design in SystemVerilog. Also SystemVerilog supports OOP which makes verification of designs at a higher level of abstraction possible.
+
+How is it used in verification ?
+A hardware design mostly consists of several Verilog (.v) files with one top module, in which all other sub-modules are instantiated to achieve the desired behavior and functionality. An environment called testbench is required for the verification of a given verilog design and is usually written in SystemVerilog these days. The idea is to drive the design with different stimuli to observe its outputs and compare it with expected values to see if the design is behaving the way it should.
+
+In order to do this, the top level design module is instantiated within the testbench environment, and design input/output ports are connected with the appropriate testbench component signals. The inputs to the design are driven with certain values for which we know how the design should operate. The outputs are analyzed and compared with the expected values to see if the design behavior is correct.
+
+Example
+Consider a simple verilog design of a D-flip flop which is required to be verified. The functionality of DFF is that Q output pin gets latched to the value in D input pin at every positive clock edge, which makes it a positive edge-triggered flip-flop. Let us also assume that the flip-flop has an active-low reset pin and a clock.
+
+// File : d_ff.v
+module d_ff (clk, resetn, q, d);
+
+	input clk;
+	input resetn;
+	input d;
+	output q;
+
+	reg q;
+
+	always @ (posedge clk)
+		if (! resetn)
+			q <= 0;
+		else
+			q <= d;
+
+endmodule
+
+
+*********************
+−
+1.
+Introduction & Basics
+SystemVerilog Tutorial
+SystemVerilog TestBench
+−
+2.
+Data Types
+SystemVerilog Data Types
+SystemVerilog logic
+SystemVerilog bit, byte and int
+SystemVerilog Strings
+SystemVerilog Enumeration
+SystemVerilog Structure
+SystemVerilog typedef and alias
+SystemVerilog Const
+−
+3.
+Arrays
+SystemVerilog Packed Arrays
+SystemVerilog Array Manipulation
+SystemVerilog Unpacked Arrays
+SystemVerilog Arrays
+SystemVerilog Queue
+SystemVerilog Dynamic Array
+SystemVerilog Associative Array
+SystemVerilog Array Randomization
+−
+4.
+Control Flow & Loops
+SystemVerilog Loops
+SystemVerilog for loop
+SystemVerilog foreach loop
+SystemVerilog repeat
+SystemVerilog while and do-while loop
+SystemVerilog 'break' and 'continue'
+SystemVerilog 'unique' and 'priority' if-else
+SystemVerilog 'unique' and 'priority' case
+SystemVerilog always_comb, always_ff
+−
+5.
+Classes & OOP
+SystemVerilog Class
+SystemVerilog Class Handle
+SystemVerilog Class Constructor
+SystemVerilog Polymorphism
+SystemVerilog Inheritance
+SystemVerilog super Keyword
+SystemVerilog 'this' keyword
+SystemVerilog Virtual Methods
+SystemVerilog Parameterized Classes
+SystemVerilog Static Variables & Functions
+SystemVerilog Copying Objects
+SystemVerilog Cast Dynamic
+SystemVerilog Cast Static
+SystemVerilog Abstract Class
+SystemVerilog Typedef Class
+−
+6.
+Randomization
+SystemVerilog Randomization
+SystemVerilog Random
+SystemVerilog pre_randomize & post_randomize
+SystemVerilog Disable Randomization
+SystemVerilog randcase
+−
+7.
+Constraints
+SystemVerilog Constraints
+SystemVerilog Constraint Blocks
+SystemVerilog Inline Constraints
+SystemVerilog Constraint 'inside'
+SystemVerilog Constraint Examples
+SystemVerilog Implication Constraint
+SystemVerilog solve before
+SystemVerilog foreach Constraint
+SystemVerilog Static Constraints
+SystemVerilog Soft Constraints
+SystemVerilog Disable Constraints
+Bus Protocol Constraints
+Memory Partitioning Example
+−
+8.
+Functional Coverage
+SystemVerilog Covergroup and Coverpoint
+SystemVerilog Functional Coverage
+SystemVerilog Coverpoint Bins
+SystemVerilog Cross Coverage
+−
+9.
+Assertions
+SystemVerilog Concurrent Assertions
+SystemVerilog Immediate Assertions
+SystemVerilog Assertions
+SystemVerilog $rose, $fell, $stable
+SystemVerilog Assertions with time delay
+−
+10.
+Interfaces & Modports
+SystemVerilog Interface
+SystemVerilog Clocking Blocks
+SystemVerilog Interface Intro
+SystemVerilog Interface Bundles
+SystemVerilog Modport
+SystemVerilog Clocking Blocks Part II
+−
+11.
+Threads & Processes
+SystemVerilog fork join
+SystemVerilog Threads
+SystemVerilog forever loop
+SystemVerilog fork join_none
+SystemVerilog fork join_any
+SystemVerilog disable fork join
+SystemVerilog wait fork
+−
+12.
+Interprocess Communication
+SystemVerilog Interprocess Communication
+SystemVerilog Event
+SystemVerilog Semaphore
+SystemVerilog Mailbox
+−
+13.
+Testbench Components
+SystemVerilog Program Block
+SystemVerilog Command Line Arguments
+SystemVerilog file operations
+SystemVerilog Testbench Example 1
+SystemVerilog Testbench Example 2
+SystemVerilog Testbench Example Adder
+−
+14.
+Advanced Features
+SystemVerilog Scope Resolution Operator
+SystemVerilog 'extern'
+SystemVerilog local vs protected
+SystemVerilog Functions
+SystemVerilog Package
+SystemVerilog DPI
+SystemVerilog Callback
+SystemVerilog `define Macro
+SystemVerilog Interview Questions Set 1
+
+
+
+
+********************************************
+**********************
+
+2.
+Data Types
+SystemVerilog Data Types
+SystemVerilog logic
+SystemVerilog bit, byte and int
+SystemVerilog Strings
+SystemVerilog Enumeration
+SystemVerilog Structure
+SystemVerilog typedef and alias
+SystemVerilog Const
+
+Strings
+// Strings can be split into multiple lines [for visual appeal] by the using "" character
+// This does not split the string into multiple lines in the output
+// Result: New York is an awesome place.So energetic and vibrant.
+$display ("New York is an awesome place.
+So energetic and vibrant.");
+
+// Strings can be split to be displayed in multiple lines using "
+"
+/* Result:
+New York is an awesome place.
+So energetic and vibrant.
+*/
+$display ("New York is an awesome place.
+
+So energetic and vibrant.");
+
+// To store a string literal in an integral type, each character will require 8 bits
+byte 		myLetter 	= "D";
+bit [7:0] 	myNewLine 	= "
+";
+
+// "Hello World" has 11 characters and each character requires 8-bits
+bit [8*17:1] myMessage  = "Hello World";
+string       myMessage2 = "Hello World";    // Uses "string" data type
+
+
+*******************
+
+***********************
+SystemVerilog
+************************
+What is SystemVerilog ?
+Hardware Description Languages (HDL) like Verilog and VHDL are used to describe hardware behavior so that it can be converted to digital blocks made up of combinational gates and sequential elements. In order to verify that the hardware description in HDL is correct, there is a need for a language with more features in OOP that will support complicated testing procedures and is often called a Hardware Verification Language.
+
+SystemVerilog is an extension of Verilog with many such verification features that allow engineers to verify the design using complex testbench structures and random stimuli in simulation.
+
+Example
+Consider a simple verilog design of a D-flip flop which is required to be verified.
+
+// File : d_ff.v
+module d_ff (clk, resetn, q, d);
+
+	input clk;
+	input resetn;
+	input d;
+	output q;
+
+	reg q;
+
+	always @ (posedge clk)
+		if (! resetn)
+			q <= 0;
+		else
+			q <= d;
+
+endmodule
+
+******************************
+SystemVerilog TestBench
+Components of a testbench
+The example shown in Introduction is not modular, scalable, flexible or even re-usable because of the way DUT is connected, and how signals are driven. Let's take a look at a simple testbench and try to understand about the various components that facilitate data transfer from and to the DUT.
+
+Component	Description
+Generator	Generates different input stimulus to be driven to DUT
+Interface	Contains design signals that can be driven or monitored
+Driver	Drives the generated stimulus to the design
+Monitor	Monitor the design input-output ports to capture design activity
+Scoreboard	Checks output from the design with expected behavior
+Environment	Contains all the verification components mentioned above
+Test	Contains the environment that can be tweaked with different configuration settings
+
+
+******************
+What is DUT ?
+DUT stands for Design Under Test and is the hardware design written in Verilog or VHDL. DUT is a term typically used in post validation of the silicon once the chip is fabricated. In pre validation, it is also called as Design Under Verification, DUV in short.
+
+// All verification components are placed in this top testbench module
+module tb_top;
+
+	// Declare variables that need to be connected to the design instance
+	// These variables are assigned some values that in turn gets transferred to
+	// the design as inputs because they are connected with the ports in the design
+	reg clk;
+	wire en;
+	wire wr;
+	wire data;
+
+	// Instantiate the design module and connect the variables declared above
+	// with the ports in the design
+	design myDsn ( .clk (clk),
+	               .en  (en),
+	               .wr  (wr),
+	               . ...
+	               .rdata);
+
+	// Develop rest of the testbench and write stimulus that can be driven to the design
+endmodule
+
+
+.
+Data Types
+SystemVerilog Data Types
+SystemVerilog logic
+SystemVerilog bit, byte and int
+SystemVerilog Strings
+SystemVerilog Enumeration
+SystemVerilog Structure
+SystemVerilog typedef and alias
+SystemVerilog Const
+
+
+Comments
+Value System
+Enhanced (') Literal
+Floating Point/Exponential Numbers
+Strings
+Structures
+Fixed Arrays
+Void
+real to int Conversion
+
+
+Floating Point/Exponential Numbers
+Sets fixed point format. eg 2.8 or exponent format (eg 7.2e6)
+module tb;
+  real  pi;        // Declared to be of type real
+  real  freq;
+
+  initial begin
+    pi   = 3.14;    // Store floating point number
+    freq = 1e6; 	// Store exponential number
+
+    $display ("Value of pi = %f", pi);
+    $display ("Value of pi = %0.3f", pi);
+    $display ("Value of freq = %0d", freq);
+  end
+endmodule
+
+
+*****************
+
+Arrays
+SystemVerilog Packed Arrays
+SystemVerilog Array Manipulation
+SystemVerilog Unpacked Arrays
+SystemVerilog Arrays
+SystemVerilog Queue
+SystemVerilog Dynamic Array
+SystemVerilog Associative Array
+SystemVerilog Array Randomization
+
+
+SystemVerilog Arrays
+Static Arrays
+Dynamic Arrays
+Associative Arrays
+Queues
+SystemVerilog offers much flexibility in building complicated data structures through the different types of arrays.
+
+Static Arrays
+Dynamic Arrays
+Associative Arrays
+Queues
+Static Arrays
+A static array is one whose size is known before compilation time. In the example shown below, a static array of 8-bit wide is declared, assigned some value and iterated over to print its value.
+
+module tb;
+	bit [7:0] 	m_data; 	// A vector or 1D packed array
+
+	initial begin
+		// 1. Assign a value to the vector
+		m_data = 8'hA2;
+
+		// 2. Iterate through each bit of the vector and print value
+		for (int i = 0; i < $size(m_data); i++) begin
+			$display ("m_data[%0d] = %b", i, m_data[i]);
+		end
+	end
+endmodule
+
+
+
+*******************
+
+Control Flow & Loops
+SystemVerilog Loops
+SystemVerilog for loop
+SystemVerilog foreach loop
+SystemVerilog repeat
+SystemVerilog while and do-while loop
+SystemVerilog 'break' and 'continue'
+SystemVerilog 'unique' and 'priority' if-else
+SystemVerilog 'unique' and 'priority' case
+SystemVerilog always_comb, always_ff
+
+
+SystemVerilog for loop
+Syntax
+Example #1 - Array Iteration
+Design Example
+Testbench Example
+Example #2 - Multiple Initializations
+Example #3 - Adding multiple modifiers
+A for loop in SystemVerilog repeats a given set of statements multiple times until the given expression is not satisfied. Like all other procedural blocks, the for loop requires multiple statements within it to be enclosed by begin and end keywords.
+
+Syntax
+For loop controls execution of its statements using a three step approach:
+
+Initialize the variables that affect how many times the loop is run
+Before executing the loop, check to see if the condition is true
+The modifier is executed at the end of each iteration, and jumps to step 2.
+for ( [initialization]; <condition>; [modifier])
+	// Single statement
+
+for ( [initialization]; <condition>; [modifier]) begin
+	// Multiple statements
+end
+
+
+
+*****************
+Classes & OOP
+SystemVerilog Class
+SystemVerilog Class Handle
+SystemVerilog Class Constructor
+SystemVerilog Polymorphism
+SystemVerilog Inheritance
+SystemVerilog super Keyword
+SystemVerilog 'this' keyword
+SystemVerilog Virtual Methods
+SystemVerilog Parameterized Classes
+SystemVerilog Static Variables & Functions
+SystemVerilog Copying Objects
+SystemVerilog Cast Dynamic
+SystemVerilog Cast Static
+SystemVerilog Abstract Class
+SystemVerilog Typedef Class
+
+SystemVerilog Class Handle
+Class Handle Example
+// Create a new class with a single member called
+// count that stores integer values
+class Packet;
+	int count;
+endclass
+
+module tb;
+  	// Create a "handle" for the class Packet that can point to an
+  	// object of the class type Packet
+  	// Note: This "handle" now points to NULL
+	Packet pkt;
+
+  	initial begin
+      if (pkt == null)
+        $display ("Packet handle 'pkt' is null");
+
+      // Display the class member using the "handle"
+      // Expect a run-time error because pkt is not an object
+      // yet, and is still pointing to NULL. So pkt is not
+      // aware that it should hold a member
+      $display ("count = %0d", pkt.count);
+  	end
+endmodule
+
+
+*****************
+
+Randomization
+SystemVerilog Randomization
+SystemVerilog Random
+SystemVerilog pre_randomize & post_randomize
+SystemVerilog Disable Randomization
+SystemVerilog randcase
+
+SystemVerilog Randomization
+class myPacket;
+
+	// Declare two variables for randomization
+	// mode is of type rand and hence any random value between 0 and 3 can be picked each time
+	// key is of type randc and hence random values between 0 and 7 can be picked and
+	// values will be repeated only after all other values have been already taken
+	rand   bit [1:0]    mode;
+	randc  bit [2:0]    key;
+
+	// These statements are called constraints that help us to limit
+	// the randomness within specified ranges
+	// mode is constrained to have a value less than 3 (excluding)
+	// key is constrained to have a value between 2 and 7 (excluding)
+	constraint c_mode1 { mode < 3; }
+	constraint c_key1  { key > 2;
+                         key < 7; }
+
+    // This is just a function to display current values of these variables
+    function display ();
+       $display ("Mode : 0x%0h Key : 0x%0h", mode, key);
+    endfunction
+endclass
+
+module tb_top;
+
+	// Create a class object handle
+	myPacket pkt;
+
+	initial begin
+
+		// Instantiate the object, and allocate memory to this variable
+		pkt = new ();
+
+		// Let's just randomize the class object 15 times and display all the
+		// values randomization yielded each time
+		for (int i = 0; i < 15; i++) begin
+
+			// By using assert(), we are ensuring that randomization is successful.
+			assert (pkt.randomize ());
+			pkt.display ();
+		end
+	end
+endmodule
+
+
+************
+Constraints
+SystemVerilog Constraints
+SystemVerilog Constraint Blocks
+SystemVerilog Inline Constraints
+SystemVerilog Constraint 'inside'
+SystemVerilog Constraint Examples
+SystemVerilog Implication Constraint
+SystemVerilog solve before
+SystemVerilog foreach Constraint
+SystemVerilog Static Constraints
+SystemVerilog Soft Constraints
+SystemVerilog Disable Constraints
+Bus Protocol Constraints
+Memory Partitioning Example
+
+SystemVerilog Constraints
+class Pkt;
+	rand bit [7:0] addr;
+	rand bit [7:0] data;
+
+	constraint addr_limit { addr <= 8'hB; }
+endclass
+
+
+****************
+Functional Coverage
+SystemVerilog Covergroup and Coverpoint
+SystemVerilog Functional Coverage
+SystemVerilog Coverpoint Bins
+SystemVerilog Cross Coverage
+
+SystemVerilog Functional Coverage
+
+odule test;
+	bit [3:0] mode;
+	bit [1:0] key;
+
+	// Other testbench code
+endmodule
+
+
+*****************
+
+Assertions
+SystemVerilog Concurrent Assertions
+SystemVerilog Immediate Assertions
+SystemVerilog Assertions
+SystemVerilog $rose, $fell, $stable
+SystemVerilog Assertions with time delay
+
+
+SystemVerilog Concurrent Assertions
+module tb;
+    bit a, b;
+    bit clk;
+
+    always #10 clk = ~clk;
+
+    initial begin
+        for (int i = 0; i < 10; i++) begin
+            @(posedge clk);
+            a <= $random;
+            b <= $random;
+            $display("[%0t] a=%0b b=%0b", $time, a, b);
+        end
+        #10 $finish;
+    end
+
+  // This assertion runs for entire duration of simulation
+  // Ensure that both signals are high at posedge clk
+  assert property (@(posedge clk) a & b);
+
+endmodule
+
+
+******************
+Interfaces & Modports
+SystemVerilog Interface
+SystemVerilog Clocking Blocks
+SystemVerilog Interface Intro
+SystemVerilog Interface Bundles
+SystemVerilog Modport
+SystemVerilog Clocking Blocks Part II
+
+SystemVerilog Interface
+interface apb_if (input pclk);
+	logic [31:0]    paddr;
+	logic [31:0]    pwdata;
+	logic [31:0]    prdata;
+	logic           penable;
+	logic           pwrite;
+	logic           psel;
+endinterface
+
+
+
+****************
+
+Threads & Processes
+SystemVerilog fork join
+SystemVerilog Threads
+SystemVerilog forever loop
+SystemVerilog fork join_none
+SystemVerilog fork join_any
+SystemVerilog disable fork join
+SystemVerilog wait fork
+
+module tb_top;
+   initial begin
+
+   	  #1 $display ("[%0t ns] Start fork ...", $time);
+
+   	  // Main Process: Fork these processes in parallel and wait untill all
+   	  // of them finish
+      fork
+      	 // Thread1 : Print this statement after 5ns from start of fork
+         #5 $display ("[%0t ns] Thread1: Orange is named after orange", $time);
+
+         // Thread2 : Print these two statements after the given delay from start of fork
+         begin
+            #2 $display ("[%0t ns] Thread2: Apple keeps the doctor away", $time);
+            #4 $display ("[%0t ns] Thread2: But not anymore", $time);
+         end
+
+         // Thread3 : Print this statement after 10ns from start of fork
+         #10 $display ("[%0t ns] Thread3: Banana is a good fruit", $time);
+      join
+
+      // Main Process: Continue with rest of statements once fork-join is over
+      $display ("[%0t ns] After Fork-Join", $time);
+   end
+endmodule
+
+
+
+********************
+Interprocess Communication
+SystemVerilog Interprocess Communication
+SystemVerilog Event
+SystemVerilog Semaphore
+SystemVerilog Mailbox
+
+module tb;
+
+  // Create an event variable that processes can use to trigger and wait
+  event event_a;
+
+  // Thread1: Triggers the event using "->" operator
+  initial begin
+    #20 ->event_a;
+    $display ("[%0t] Thread1: triggered event_a", $time);
+  end
+
+  // Thread2: Waits for the event using "@" operator
+  initial begin
+    $display ("[%0t] Thread2: waiting for trigger ", $time);
+    @(event_a);
+    $display ("[%0t] Thread2: received event_a trigger ", $time);
+  end
+
+  // Thread3: Waits for the event using ".triggered"
+  initial begin
+    $display ("[%0t] Thread3: waiting for trigger ", $time);
+    wait(event_a.triggered);
+    $display ("[%0t] Thread3: received event_a trigger", $time);
+  end
+endmodule
+
+
+***************
+Testbench Components
+SystemVerilog Program Block
+SystemVerilog Command Line Arguments
+SystemVerilog file operations
+SystemVerilog Testbench Example 1
+SystemVerilog Testbench Example 2
+SystemVerilog Testbench Example Adder
+
+	
+
+***************
+Advanced Features
+SystemVerilog Scope Resolution Operator
+SystemVerilog 'extern'
+SystemVerilog local vs protected
+SystemVerilog Functions
+SystemVerilog Package
+SystemVerilog DPI
+SystemVerilog Callback
+SystemVerilog `define Macro
+SystemVerilog Interview Questions Set 1
+
+
+ Defining extern function
+class ABC;
+	int 	data;
+
+	extern virtual function void display();
+endclass
+
+// Definition of an external function using scope
+// resolution operator
+function void ABC::display();
+	$display("data = 0x%0h", data);
+endfunction
+
+module tb;
+	initial begin
+		ABC abc = new();
+		abc.data = 32'hface_cafe;
+		abc.display();
+	end
+endmodule
+
