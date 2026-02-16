@@ -598,3 +598,789 @@ I/O and memory operations.
 
 
 ***************************************
+VLSI Design - Digital System
+
+Previous
+Quiz
+Next
+Very-large-scale integration (VLSI) is the process of creating an integrated circuit (IC) by combining thousands of transistors into a single chip. VLSI began in the 1970s when complex semiconductor and communication technologies were being developed. The microprocessor is a VLSI device.
+
+Before the introduction of VLSI technology, most ICs had a limited set of functions they could perform. An electronic circuit might consist of a CPU, ROM, RAM and other glue logic. VLSI lets IC designers add all of these into one chip.
+
+The electronics industry has achieved a phenomenal growth over the last few decades, mainly due to the rapid advances in large scale integration technologies and system design applications. With the advent of very large scale integration (VLSI) designs, the number of applications of integrated circuits (ICs) in high-performance computing, controls, telecommunications, image and video processing, and consumer electronics has been rising at a very fast pace.
+
+The current cutting-edge technologies such as high resolution and low bit-rate video and cellular communications provide the end-users a marvelous amount of applications, processing power and portability. This trend is expected to grow rapidly, with very important implications on VLSI design and systems design.
+
+VLSI Design Flow
+The VLSI IC circuits design flow is shown in the figure below. The various levels of design are numbered and the blocks show processes in the design flow.
+
+Specifications comes first, they describe abstractly, the functionality, interface, and the architecture of the digital IC circuit to be designed.
+
+<img width="800" height="395" alt="image" src="https://github.com/user-attachments/assets/8d8f8b2d-777a-4193-a42f-648150745131" />
+<img width="218" height="387" alt="image" src="https://github.com/user-attachments/assets/7ae39bab-f227-48fb-86de-0efdbb2950e5" />
+
+<img width="500" height="329" alt="image" src="https://github.com/user-attachments/assets/9d423332-8182-4de2-9eb2-cbad936543ae" />
+<img width="450" height="492" alt="image" src="https://github.com/user-attachments/assets/20bba44f-3fe8-45dd-89fd-f1f52cfff433" />
+
+
+**************************
+VLSI Design - FPGA Technology
+
+Previous
+Quiz
+Next
+FPGA Introduction
+The full form of FPGA is Field Programmable Gate Array. It contains ten thousand to more than a million logic gates with programmable interconnection. Programmable interconnections are available for users or designers to perform given functions easily. A typical model FPGA chip is shown in the given figure. There are I/O blocks, which are designed and numbered according to function. For each module of logic level composition, there are CLBs (Configurable Logic Blocks).
+
+CLB performs the logic operation given to the module. The inter connection between CLB and I/O blocks are made with the help of horizontal routing channels, vertical routing channels and PSM (Programmable Multiplexers).
+
+The number of CLB it contains only decides the complexity of FPGA. The functionality of CLBs and PSM are designed by VHDL or any other hardware descriptive language. After programming, CLB and PSM are placed on chip and connected with each other with routing channels.
+<img width="471" height="352" alt="image" src="https://github.com/user-attachments/assets/87dd746f-98f1-458b-be73-4e848c696b53" />
+
+Gate Array Design
+The gate array (GA) ranks second after the FPGA, in terms of fast prototyping capability. While user programming is important to the design implementation of the FPGA chip, metal mask design and processing is used for GA. Gate array implementation requires a two-step manufacturing process.
+
+The first phase results in an array of uncommitted transistors on each GA chip. These uncommitted chips can be stored for later customization, which is completed by defining the metal interconnects between the transistors of the array. The patterning of metallic interconnects is done at the end of the chip fabrication process, so that the turn-around time can still be short, a few days to a few weeks. The figure given below shows the basic processing steps for gate array implementation.
+
+<img width="550" height="275" alt="image" src="https://github.com/user-attachments/assets/e9912b67-c240-45d8-a387-5144c36b3e92" />
+
+Standard Cell Based Design
+A standard cell based design requires development of a full custom mask set. The standard cell is also known as the polycell. In this approach, all of the commonly used logic cells are developed, characterized and stored in a standard cell library.
+
+A library may contain a few hundred cells including inverters, NAND gates, NOR gates, complex AOI, OAI gates, D-latches and Flip-flops. Each gate type can be implemented in several versions to provide adequate driving capability for different fan-outs. The inverter gate can have standard size, double size, and quadruple size so that the chip designer can select the proper size to obtain high circuit speed and layout density.
+
+Each cell is characterized according to several different characterization categories, such as,
+
+Delay time versus load capacitance
+Circuit simulation model
+Timing simulation model
+Fault simulation model
+Cell data for place-and-route
+Mask data
+
+<img width="540" height="356" alt="image" src="https://github.com/user-attachments/assets/f154052f-f435-4d36-96bb-8c936c7834f3" />
+
+
+*********************
+VLSI Design - MOS Transistor
+
+Previous
+Quiz
+Next
+Complementary MOSFET (CMOS) technology is widely used today to form circuits in numerous and varied applications. Todays computers, CPUs and cell phones make use of CMOS due to several key advantages. CMOS offers low power dissipation, relatively high speed, high noise margins in both states, and will operate over a wide range of source and input voltages (provided the source voltage is fixed)
+
+For the processes we will discuss, the type of transistor available is the Metal-Oxide-Semiconductor Field Effect Transistor (MOSFET). These transistors are formed as a sandwich consisting of a semiconductor layer, usually a slice, or wafer, from a single crystal of silicon; a layer of silicon dioxide (the oxide) and a layer of metal.
+
+Structure of a MOSFET
+Structure of misfet
+As shown in the figure, MOS structure contains three layers −
+
+The Metal Gate Electrode
+
+The Insulating Oxide Layer (SiO2)
+
+P type Semiconductor (Substrate)
+
+MOS structure forms a capacitor, with gate and substrate are as two plates and oxide layer as the dielectric material. The thickness of dielectric material (SiO2) is usually between 10 nm and 50 nm. Carrier concentration and distribution within the substrate can be manipulated by external voltage applied to gate and substrate terminal. Now, to understand the structure of MOS, first consider the basic electric properties of P Type semiconductor substrate.
+
+Concentration of carrier in semiconductor material is always following the Mass Action Law. Mass Action Law is given by −
+
+n.p=n2i
+
+Where,
+
+n is carrier concentration of electrons
+
+p is carrier concentration of holes
+
+ni is intrinsic carrier concentration of Silicon
+
+
+<img width="426" height="279" alt="image" src="https://github.com/user-attachments/assets/c9d51515-56f8-454f-969f-9ea097424d6c" />
+<img width="500" height="217" alt="image" src="https://github.com/user-attachments/assets/40143f16-42ec-4550-81ba-d7482ff7eb3e" />
+
+
+
+******************
+VLSI Design - MOS Inverter
+Previous
+Quiz
+Next
+The inverter is truly the nucleus of all digital designs. Once its operation and properties are clearly understood, designing more intricate structures such as NAND gates, adders, multipliers, and microprocessors is greatly simplified. The electrical behavior of these complex circuits can be almost completely derived by extrapolating the results obtained for inverters.
+
+The analysis of inverters can be extended to explain the behavior of more complex gates such as NAND, NOR, or XOR, which in turn form the building blocks for modules such as multipliers and processors. In this chapter, we focus on one single incarnation of the inverter gate, being the static CMOS inverter or the CMOS inverter, in short. This is certainly the most popular at present and therefore deserves our special attention.
+
+Principle of Operation
+The logic symbol and truth table of ideal inverter is shown in figure given below. Here A is the input and B is the inverted output represented by their node voltages. Using positive logic, the Boolean value of logic 1 is represented by Vdd and logic 0 is represented by 0. Vth is the inverter threshold voltage, which is Vdd /2, where Vdd is the output voltage.
+
+The output is switched from 0 to Vdd when input is less than Vth. So, for 0<Vin<Vth output is equal to logic 0 input and Vth<Vin< Vdd is equal to logic 1 input for inverter.
+
+<img width="600" height="250" alt="image" src="https://github.com/user-attachments/assets/5dee2634-3bdb-4159-acf1-e22fcca93e7d" />
+
+
+
+**********************
+Combinational MOS Logic Circuits
+
+Previous
+Quiz
+Next
+Combinational logic circuits or gates, which perform Boolean operations on multiple input variables and determine the outputs as Boolean functions of the inputs, are the basic building blocks of all digital systems. We will examine simple circuit configurations such as two-input NAND and NOR gates and then expand our analysis to more general cases of multiple-input circuit structures.
+
+Next, the CMOS logic circuits will be presented in a similar fashion. We will stress the similarities and differences between the nMOS depletion-load logic and CMOS logic circuits and point out the advantages of CMOS gates with examples. In its most general form, a combinational logic circuit, or gate, performing a Boolean function can be represented as a multiple-input, single-output system, as depicted in the figure.
+
+
+<img width="337" height="298" alt="image" src="https://github.com/user-attachments/assets/694cd0c7-e7f8-480f-ac91-0950443ba3b7" />
+
+
+***************
+VLSI Design - Sequential MOS Logic Circuits
+
+Previous
+Quiz
+Next
+Logic circuits are divided into two categories − (a) Combinational Circuits, and (b) Sequential Circuits.
+
+In Combinational circuits, the output depends only on the condition of the latest inputs.
+
+In Sequential circuits, the output depends not only on the latest inputs, but also on the condition of earlier inputs. Sequential circuits contain memory elements.
+
+
+<img width="400" height="215" alt="image" src="https://github.com/user-attachments/assets/5adfdd68-e850-49ff-8532-68006912248e" />
+
+<img width="300" height="200" alt="image" src="https://github.com/user-attachments/assets/edf7f1f0-2f5d-4e76-b785-e684c23acd2c" />
+
+<img width="445" height="230" alt="image" src="https://github.com/user-attachments/assets/c1b8c84e-7ec1-484d-ba41-7da1741cfec4" />
+
+********************
+VHDL Programming Combinational Circuits
+
+Previous
+Quiz
+Next
+This chapter explains the VHDL programming for Combinational Circuits.
+
+VHDL Code for a Half-Adder
+
+<img width="550" height="174" alt="image" src="https://github.com/user-attachments/assets/a632bbfd-5569-4783-8c1d-afb8bdee88ab" />
+
+
+******************
+VHDL Programming for Sequential Circuits
+
+Previous
+Quiz
+Next
+This chapter explains how to do VHDL programming for Sequential Circuits.
+
+VHDL Code for an SR Latch
+library ieee; 
+use ieee.std_logic_1164.all;
+  
+entity srl is 
+   port(r,s:in bit; q,qbar:buffer bit); 
+end srl;  
+
+architecture virat of srl is 
+   signal s1,r1:bit; 
+begin 
+   q<= s nand qbar; 
+   qbar<= r nand q; 
+end virat; 
+Waveforms
+
+<img width="400" height="145" alt="image" src="https://github.com/user-attachments/assets/b3b0fa93-cf13-4a7f-a71d-4172ecc31a27" />
+
+
+
+**************************
+What is an FPGA?
+What is FPGA? FPGA stands for Field Programmable Gate Array. Let's analyze the term:
+1. Field-Programmable: An FPGA is manufactured to be easily reconfigured by developers, designers or customers. To program an FPGA as a specific configuration, Verilog HDL or VHDL (Hardware Description Language) is used as the standard language for FPGA programming.
+2. Gate-Array: An FPGA consists of an array of programmable logic gates/ blocks such as AND, OR, XOR, NOT, memory elements, DSP components, etc., and reconfigurable interconnects which are to connect logic gates together for performing a specific function.
+What is FPGA
+
+Thus, FPGAs are nothing, but logic blocks and interconnects that can be programmable by Hardware Description Languages (Verilog HDL/ VHDL) to perform different complex functions. 
+In fact, FPGAs can be used to implement almost any DSP algorithm. Some FPGAs also obtain embedded soft-core processors such as Xilinx's MicroBlaze, Altera's Nios II, etc. so that we can use C, C++, etc. to program the processor like what we do with a microcontroller. Besides, the soft processors can communicate with hardware accelerators to speed up complex DSP operations so that we can obtain a better flexible embedded system for niche applications. 
+
+Let's take a very basic example on how to use an FPGA. Let's assume that you are designing a 1-bit full adder and you already obtained the logic diagram of the adder as shown in the figure below.
+What is FPGA
+As mentioned above, there are necessary logic gates on FPGA such as XOR, AND and OR in order to implement the above adder on FPGA. To demonstrate the operation of the adder on FPGA, either Verilog or VHDL can be easily used to connect those gates together as shown in the logic diagram of the adder.
+An example Verilog code for the adder:
+
+<img width="640" height="252" alt="image" src="https://github.com/user-attachments/assets/7e3f4799-890c-4459-be36-51d335bceeae" />
+
+<img width="408" height="148" alt="image" src="https://github.com/user-attachments/assets/fc9c30ee-f4a7-4ce2-9e67-4dbfedfa418b" />
+
+
+*****************
+UVM Tutorial
+<img width="960" height="680" alt="image" src="https://github.com/user-attachments/assets/12671aa5-9f04-4abf-97d7-b3a4cdf27eb5" />
+<img width="774" height="391" alt="image" src="https://github.com/user-attachments/assets/97198103-b4e1-487f-9ab3-e618a1f5e6a3" />
+<img width="362" height="412" alt="image" src="https://github.com/user-attachments/assets/3cc0a113-89c2-4a9f-9347-ae26e4c46aff" />
+<img width="640" height="607" alt="image" src="https://github.com/user-attachments/assets/a50a3ae3-c725-40b4-bbf8-d71d9f405113" />
+
+
+*****************
+Verilog vs VHDL: Explain by Examples
+Last time, I presented in detail what actually FPGA programming is and how to get started with FPGA design. A brief history of Verilog and VHDL was also discussed. If you search for the difference between Verilog and VHDL, you will see many difference pages discussing this HDL language war, but most of them are short and not well-explained by examples for facilitating beginners or students' understanding.
+The difference between Verilog and VHDL will be explained in detail by examples in this post. The advantages and disadvantages of Verilog and VHDL will be also discussed.
+<img width="621" height="121" alt="image" src="https://github.com/user-attachments/assets/29adc7f2-a47b-4c44-9083-2caa5885ca63" />
+<img width="400" height="362" alt="image" src="https://github.com/user-attachments/assets/fd6c5471-2c80-41e7-b722-795bf98c3d5a" />
+
+
+****************
+erilog code for Alarm clock on FPGA
+Verilog code for an alarm clock on FPGA is presented in this project. The Verilog code is fully synthesizable for FPGA implementation. 
+The simple alarm clock is shown in the following figure. The alarm clock outputs a real-time clock with a 24-hour format and also provides an alarm feature. Users also can set the clock time through switches. 
+
+<img width="640" height="562" alt="image" src="https://github.com/user-attachments/assets/55dfe186-532c-495e-94eb-1a8ef1417f6f" />
+
+
+****************
+VHDL code for digital clock on FPGA
+This VHDL project is the VHDL version code of the digital clock in Verilog I posted before(link). The VHDL code for the digital clock is synthesizable for FPGA implementation and full VHDL code is provided.
+This digital clock is a reconfigurable 24-hour clock displaying hours, minutes, and seconds on seven-segment LEDs (Tutorials on 7-segment LEDs: here). Besides, users can manually set the time of the digital clock including hours and minutes through switches. 
+<img width="267" height="298" alt="image" src="https://github.com/user-attachments/assets/738b3e55-538c-4bd5-b844-c534679ed3a7" />
+<img width="640" height="315" alt="image" src="https://github.com/user-attachments/assets/b9841653-ceac-45c6-a3f1-48d8bc013e89" />
+<img width="640" height="184" alt="image" src="https://github.com/user-attachments/assets/2d5f0664-ebcb-4e45-9b3f-a1f382d59389" />
+
+***************
+Verilog code for Traffic light controller
+A Verilog source code for a traffic light controller on FPGA is presented. A sensor on the farm is to detect if there are any vehicles and change the traffic light to allow the vehicles to cross the highway. Otherwise, highway light is always green since it has higher priority than the farm. 
+
+<img width="400" height="323" alt="image" src="https://github.com/user-attachments/assets/3c72138e-609d-4a16-bfc7-6c3aa84876dc" />
+<img width="640" height="164" alt="image" src="https://github.com/user-attachments/assets/65e2d3c0-214b-4f14-aeaf-e082d21eb55a" />
+<img width="640" height="184" alt="image" src="https://github.com/user-attachments/assets/561de0e0-6576-443d-a681-6823aa856956" />
+
+
+******************
+Computer Organization and Architecture Tutorial
+Last Updated : 10 Oct, 2025
+Computer architecture defines how a computer’s components communicate through electronic signals to perform input, processing, and output operations.
+
+It covers the design and organization of the CPU, memory, storage, and input/output devices.
+Describes how these components interact through buses, control signals, and data pathways.
+It directly influences the overall speed, functionality, and reliability of a computer system.
+computer_organization_and_architecture.webpcomputer_organization_and_architecture.webp
+Basic Computer Structure
+This section introduces the fundamentals of computer organisation and architecture, explaining system components, design issues, and different architectural models.
+
+What is Computer?
+Issues in Computer Design
+Von Neumann Architecture
+Harvard Architecture
+Flynn's Taxonomy
+Number System and Data Representation
+Covers how data, numbers, and characters are represented inside a computer, along with techniques to ensure accuracy and reliability in storage and communication.
+
+Number Systems
+Base Conversions
+Character Representation
+Error Detection and Correction Codes
+Fixed & Floating-Point Formats
+Representing numbers in digital systems using fixed-point and floating-point formats for precision and range.
+
+Fixed Point Representation
+Floating Point Representation
+Digital Logic & Circuits
+Designing digital systems using logic gates, Boolean algebra, and combinational/sequential circuits.
+
+Digital Electronic and Logic Gate
+Boolean Algebra
+Combinational Circuits and Sequential Circuits
+Register Transfer & Micro-Operations
+Managing data movement and operations in registers using bus/memory transfers, arithmetic, and shift micro-operations.
+
+Register Transfer Language
+Data Transfers (Bus/Memory)
+Arithmetic Micro-Operations
+Shift Micro-Operations
+Microoperations
+Hardwired vs. Microprogrammed Control Unit
+Instruction Set Architecture (ISA) & Control Flow
+Defining the set of instructions, formats, and addressing modes for processor communication.
+
+Instruction Format
+Addressing Modes
+Microarchitecture and Instruction Set Architecture
+Timing and Control
+RISC vs CISC Architectures
+Computer Arithmetic
+Explore all the concepts of computer arithmetic, including ALU operations, number complements, division algorithms, Booth’s method, overflow handling, and negative number representation.
+
+ALU and Data Path
+Difference between 1’s complement and 2’s complement
+Restoring Division Algorithm
+Non-Restoring Division
+Booth’s Algorithm
+Overflow in Arithmetic Addition
+Memory Organization
+This section explains memory organization, covering types of memory, storage hierarchy, addressing methods, virtual memory techniques, and key architectural differences.
+
+Memory & Memory Units
+Paging
+Segmentation
+Virtual Memory
+Page Replacement Algorithms
+Translation Lookaside Buffer
+NUMA vs UMA Architectures
+Memory Interleaving
+Byte Addressable & Word Addressable Memory
+Simultaneous vs Hierarchical Access Memory
+Input/Output Organization
+This section covers input/output organization, including interfaces, interrupts, DMA, peripheral devices, synchronization methods, bus systems, and processor communication.
+
+Introduction to I/O Interface
+I/O Interface (Interrupt and DMA Mode)
+Memory mapped I/O and Isolated I/O
+Interrupts
+DMA
+Modes of DMA Transfer
+DMA controller 8257/8237
+Programmable peripheral interface 8255
+Asynchronous & Synchronous I/O Synchronization
+Interface 8255 with 8085 microprocessor for 1’s and 2’s complement of a number
+Microcomputer system
+Working of 8085-based Single board microcomputer
+Interface 8254 PIT with 8085 microprocessor
+Synchronous Data Transfer
+Input-Output Processor
+Bus Systems
+MPU Communication
+BUS Arbitration
+Pipelining & Hazards
+This section explains pipelining and parallel processing, covering ILP, execution stages, hazards, VLIW, branch prediction, and Amdahl’s law.
+
+Pipelining Set 1 (Execution, Stages and Throughput)
+Pipelining Set 2 (Dependencies and Data Hazard)
+Instruction Level Parallelism
+Very Long Instruction Word (VLIW) Architecture
+Types and Stalling
+Dependencies and Data Hazard
+Branch Prediction in Pentium
+Amdahl's law and its Proof
+Comment
+R
+
+rahulsharmagfg1
+
+Follow
+
+<img width="800" height="400" alt="image" src="https://github.com/user-attachments/assets/c94d928a-2973-47d2-bf77-29c13153b3a6" />
+<img width="800" height="400" alt="image" src="https://github.com/user-attachments/assets/dba129b8-baac-45f7-8493-6f673a1acbfb" />
+<img width="800" height="400" alt="image" src="https://github.com/user-attachments/assets/d3f97349-65c8-4695-a109-cf94a41b79fc" />
+
+*****************
+The term architecture in computer literature signifies the efforts of Sir Lyle R. Johnson and Sir Frederick P. Brooks, members of the Machine Organization department, in 1959. Sir Johnson noted his description of formats, instruction types, hardware limitations, and speed improvements. These were at the system architecture level, a term more useful than machine organization. A computer user can use that term in many less precise methods.
+
+Earlier, computer architects designed computer architecture on paper. It was then directly built into a final hardware form. Later, they assembled computer architecture designs materially using transistor-transistor logic (TTL) computers. By the 1990s, new computer architectures were typically built, examined, and tweaked inside another computer architecture, in a computer architecture simulator, or the interior part of an FPGA, as a microprocessor before perpetrating to the ultimate hardware form.
+
+
+Here are the various categories of architecture that exist in our computer systems.
+Von-Neumann Architecture
+Harvard Architecture
+Instruction Set Architecture
+Micro-architecture
+System Design
+John von Neumann coined and developed this architecture. The computer we are using nowadays is based on the von Neumann architecture. It has some concepts. It is also known as Princeton architecture. It renders a unique design for the electronic digital systems having the following components:
+
+A Central Processing Unit (CPU) with arithmetic and logic unit (ALU) and processors with attached registers.
+A memory that can store data and instructions.
+External mass storage or secondary storage.
+A Control Unit (CU) with the ability to hold instructions in the program counter (PC) or instruction register (IR).
+Input and output mechanisms and peripherals.
+The von Neumann design thus constitutes the foundation of modern computing. The Harvard architecture, a similar model, had committed data addresses and buses for reading and writing to memory. It wins because von Neumann's architecture was more straightforward to execute in real hardware.
+
+<img width="563" height="359" alt="image" src="https://github.com/user-attachments/assets/40e06c31-aa2a-4586-babf-0a040565c5e3" />
+
+Harvard Architecture consists of code and data laid in distinct memory sections. It requires a separate memory block for data and instruction. It has solely contained data storage within the Central Processing Unit (CPU). A single collection of clock cycles is needed. Data accessibility in one memory is done by a single memory location in the case of Harvard architecture.
+
+One typical example is the Punch card. Moreover, modern computers may have the latest CPU processes for both methods but disparate them in a hardware design.
+<img width="523" height="359" alt="image" src="https://github.com/user-attachments/assets/c3398502-144e-4291-b45f-55243a2ad95b" />
+Another notable digital computer architecture is the Instruction Set Architecture. The architecture holds a collection of instructions that the processor renders and surmises. It consists of two instruction sets: RISC (Reduced Instruction Set Computer) and CISC (Complex Instruction Set Computer).
+
+It enables versatile implementations of an ISA, commonly differing in features such as performance, physical size, and monetary price. It empowers the evolution of the micro-architectures, implementing ISA as an exclusive, higher-performance system that can run software on preceding generations of execution.
+
+
+Micro-architecture is the structural design of a microprocessor. This computer organization leverages a method where the instruction set architecture holds a built-in processor. Engineers and hardware scientists implement instruction set architecture (ISA) with various micro-architectures that vary because of changing technology. It includes the technologies used, resources, and methods. Using this, the processors physically devised to administer a particular instruction set.
+
+It is a logical form of all electron
+<img width="1098" height="738" alt="image" src="https://github.com/user-attachments/assets/d45e53f5-3a48-4387-bee6-06dc0a2a16ed" />
+ic elements and data pathways present in the microprocessor, designed in a specific way. It allows for the optimal completion of instructions. In academia, it is called computer organization.
+
+System design defines a design that can serve user requirements like system architecture, computer modules with various interfaces, and data management within a system. The term product development is connective to the system design. It is how we can take marketing information to create a product design.
+https://www.theknowledgeacademy.com/blog/computer-architecture/
+
+***************************
+How Does Computer Architecture Work?
+Computer Architecture work by controlling how data and instructions move and executed through computer. When a programme runs, it starts from simple series of instructions that the processor handles one at a time. These instructions can be anything like do calculations, move data, or save information.
+
+Major Types of Computer Architecture
+There are different types of Computer Architecture. The major types are mentioned below:
+
+1) Von Neumann Architecture
+Named after mathematician John Von Neuman, this is the most widely used type of architecture. It uses a single memory for both data and instructions. The system fetches and executes instructions one after another, which simplifies the system. However, this sequential design causes bottlenecks in the system known as “Von Newman Bottlenecks.
+
+Von Neuman Architecture
+
+2) Harvard Architecture
+Harvard Architecture uses separate memory for data and instructions. This enables a simultaneous access to both, increasing speed and efficiency. It is commonly used in embedded systems and microcontrollers where performance and efficiency are critical.
+
+Harvard Architecture
+
+3) Modified Harvard Architecture
+The modified Harvard Architecture allows separate caches for data and instructions while maintaining a unified main memory. This approach improves performance without significantly increasing complexity or cost.
+
+Modified Harvard Architecture
+
+4) RISC & CISC Architectures
+Reduced Instruction Set Computer (RISC) architectures use a small, highly optimised set of instructions that can be executed rapidly. This simplicity often leads to faster execution and lower power usage.
+
+Complex Instruction Sey Computer (CISC) architectures have a larger set of instructions, some of which can perform complex tasks in a single command. This can make programming easier and reduce the number of instructions per programme, but it may be slower and more power-hungry.
+
+RISC & CISC
+
+Key Components of Computer Architecture
+The key components of Computer Architecture are as follows:
+
+Input Unit
+The input unit includes all devices that allow data and instructions to be fed into the computer. Common input devices include keyboards, mice, and scanners. This unit converts human-readable data into machine-readable format.
+
+Output Unit
+This unit takes processed data from the computer and converts it into a human-readable form. Typical output devices include monitors, printers, and speakers.
+
+Storage Unit / Memory
+Memory stores data and instructions before, during, and after processing. It is divided into primary memory Random Access Memory (RAM) and Read Only Memory (ROM) and secondary storage, hard drives and Solid-State Drive (SSD). Efficient memory access and administration are critical for performance. BIOS plays a key role here by helping the system load instructions stored in ROM during the boot process.
+
+Central Processing Unit (CPU)
+The Central Processing Unit (CPU) is the core of the computer which is responsible for executing commands and processing data. It includes the Arithmetic Logic Unit (ALU), which handles all arithmetic and logical operations; the Control Unit (CU), which manages and directs the activities of the processor and registers, which are small, fast storage areas within the CPU used to temporarily hold data and instructions during processing.
+
+Empower your team to work smarter and faster with ours End User Training!
+
+Fundamental Principles of Computer Architecture
+Given are the fundamental Principles of Computer Architecture:
+
+Von Neumann Architecture
+Computers built according to the Von Neuman Architecture principle separate memory data from programming instructions. They use a single medium to transport data from memory to CPU.
+
+Instruction Set Architectures
+Instruction Set Architecture (ISA) defines the set of instructions a CPU can comprehend and execute. It acts as the interface between software and hardware, guiding how a processor interprets commands from a programme.
+
+Parallel Processing
+Parallel processing enables multiple instructions to be executed simultaneously. This uses multiple processors or cores. This enhances performance, especially in data-intensive tasks like scientific simulations and multimedia processing.
+
+Emerging Trends in Computer Architecture
+Here are the emerging trends in Computer Architecture:
+
+Machine Learning and Artificial Intelligence (AI)
+Modern computer designs are being customised to speed up Machine Learning (ML) and Artificial Intelligence (AI tasks). Specialised hardware like Graphic Processing Units (GPU) and Tensor Processing Units (TPU) are designed to handle massive computations involved in training and deploying AI models.
+
+Quantum Computing
+Quantum computer differs radically from classical architecture. It uses qubits instead of bits, enabling simultaneous processing of multiple states. Though still on trial, it promises breakthroughs in areas like cryptography and complex simulations.
+
+Neuromorphic Computing
+This model is Inspired by the human brain; neuromorphic computing uses architectures to mimic human neural structures. It excels in tasks that require pattern recognition, such as voice and image processing.
+
+Memristors
+Memristors are non-volatile memory elements that remember their resistance state even after power is turned off. They offer a faster and more efficient memory storage systems in modern computers.
+
+3D Stacked Memory
+This technology stacks memory chips vertically, reducing latency and power consumption while increasing bandwidth. It allows for more compact and powerful computing systems.
+
+Shape a secure digital tomorrow-Begin with Certified Secure Computer User Course!
+
+Challenges in Computer Architecture
+As computers become more powerful, new challenges arise:
+
+1) Power Consumption: High-performance systems often require significant power, leading to heat and efficiency issues. Increased computational capabilities often result in higher energy consumption, which leads to greater heat generation.
+
+2) Scalability: As systems grow larger, architects face challenges in managing data traffic, synchronisation, and latency across components. Ensuring that systems remain efficient, responsive, and cost-effective at scale requires complex coordination and advanced design strategies.
+
+3) Security: As architectures become more advanced and interconnected, they also become more susceptible to cybersecurity threats. Vulnerabilities at the hardware level (such as Spectre and Meltdown) have shown that even the CPU can be a target.
+
+4) Cost: Advanced computer architectures and cutting-edge manufacturing processes often come with high development costs. These expenses can impact affordability and limit accessibility for widespread deployment.
+
+Examples of Computer Architecture
+Here are two examples of Computer Architecture:
+
+Von Neumann Architecture
+The Von Neumann Architecture is the earliest and most widely adopted models of computer design. It uses a single memory space to store both data and programme instructions, which are processed sequentially by the CPU. This linear approach simplifies the design and reduces hardware costs.
+
+Harvard Architecture
+Harvard architecture, in contrast, separates memory into two distinct storage spaces: one for instructions and one for data. This allows the CPU to access both simultaneously, improving speed and efficiency. It is commonly used in systems where performance and reliability are critical.
+
+The Future of Computer Architecture
+The future lies in designing architectures that balance performance, efficiency, and versatility. With the rise of AI, Internet of Things (IoT), and edge computing, the Most Powerful Computer in the World will likely feature:
+
+1) Increased use of specialised accelerators for specific tasks.
+
+2) More hybrid and heterogeneous architectures combining CPUs, GPUs, and custom processors.
+
+3) Greater emphasis on energy-efficient design.
+
+4) Continued exploration of quantum and neuromorphic systems.
+
+
+*************************
+Power Management Techniques
+Before discussing about the different types of power management techniques, let us first look into the various degrees of freedom associated with power dissipation.
+
+Since switching power dissipation is a major component of dynamic power dissipation (Pdyn), we can say the Pdyn ∝ α.(Vdd)2.CL.f. So we can reduce the dynamic power dissipation by reducing any of these parameters listed below –
+       α = switching activity
+       Vdd = supply voltage
+       CL = total load capacitance
+       f = frequency of operation
+
+Similarly as discussed earlier, static power dissipation, Psta ∝ 1/Vth.
+       Vth = threshold voltage of the transistors
+
+It is important to note one more thing, the delay associated with transistors operation is dependent on supply voltage (Vdd) and threshold voltage (Vth), as shown below –
+
+
+Although High Vth transistors are better in terms of saving static power, it introduces more delay in the circuit operation, ultimately affecting the performance.
+
+Now let us discuss about few common power management techniques in brief.
+
+  1.  Multi Vth Design
+
+As the name suggests, inside the design we use standard cells of different threshold voltage (Vth). As discussed above the Vth can affect the performance of the design, thus a trade-off is done between the performance and power depending upon the requirement.
+
+Broadly the standard cells can be classified into 3 different categories –
+
+  •  HVT cells – Standard cells made up of transistors having high Vth. These cells consumes less power but are slow. These can be used in path where timing is not critical thus we can afford to introduce delay while saving static power.
+  •  LVT cells – Standard cells made up of transistors having low Vth. These cells are fast but consumes more power. These are used in timing critical path.
+  •  SVT cells – Standard cells made up of transistors having medium Vth. It offers a trade-off between HVT and LVT, thus is consumes less power than LVT cells but are faster than HVT cells. These can be used when we are not able to meet the timing by a small margin.
+
+  2.  Bus Encoding
+
+A considerable amount of power is dissipated for transmission of data over the system level buses. It is possible to save a significant amount of power by reducing the number of transition, i.e. switching activity at the I/O interface. It is possible to suitably encode the data before sending over the I/O interface and a decoder can be used to get back the original data at the receiving end.
+
+vlsi bus encoding concept
+Figure 1: Block diagram illustrating bus encoding concept
+Coding scheme can be broadly divided into two categories –
+
+    2.1.  Non-redundant: Here an n-bit code is translated into another n-bit code, thus 2n code elements of n-bit are mapped among themselves. Referring the Figure 1, in this case m=n. This scheme is useful only when data sent over the bus is in sequence.
+
+Example – Gray coding
+
+gray coding
+It results in reduction of switching activity only when the data is sequential and highly correlated like in an instruction address bus. As shown above the number of transition is limited to 1 for sequential data. For random data, like in data bus, the number of transitions for binary and gray code are approximately equal.
+
+    2.2.  Redundant: Here an n-bit code is translated into m-bit code (where m > n), thus 2n code elements of n-bit are mapped to a larger set of 2m elements. Unlike non-redundant coding scheme, this is useful even when the data sent over the bus are not in sequence.
+
+Example – One hot coding
+
+one hot coding
+It always results in reduction in switching activity. The number of transitions is always 2. But one hot coding is not suitable for large bus size as the number of wire required increases exponentially with word size of the data ( as shown above a 3 bit data bus requires 8 bit bus at the encoder output). However there are other redundant coding techniques that can overcome this problem but we are not going to discuss about that in this article.
+
+  3.  Hardware Software Tradeoff
+
+Whenever we start designing a system first we identify which part to be implemented by HW and which one by SW, then we do system integration. Some functionality can be either realized by HW or SW or by a combination of both. Example – ADC, encryption-decryption, compression-decompression etc.
+
+HW based approach – faster, costlier, consumes more power
+SW based approach – slower, cheaper, consumes less power
+
+  4.  Multiple Vdd design
+
+As mentioned earlier the power dissipation has a strong dependency on the supply voltage. Thus lower supply voltage implies less power consumption. But delay is inversely proportional to Vdd, thus we have to take that into consideration while scaling the voltage.
+
+    4.1.  Static Voltage Scaling
+
+In a design, different blocks can work on different voltages, and the lower the voltage of a block, the less power it is likely to consume; therefore, it is imperative to create multiple voltage domains. To support this, typically voltage regulators are used to create different supplies from one source supply. IPs operating on one particular voltage will be put in the respective voltage island.
+
+    4.2.  Dynamic Voltage and Frequency Scaling (DVFS)
+
+DVFS is a technique used to optimize power consumption in differing workload scenarios. Consider an example of a CPU, whose work load is a time varying function which heavily depends on the application you are running. Although work load is varying, we are maintaining a fixed voltage and frequency to it, thus a fixed power dissipation takes place all the time. DVFS basically adjusts the voltage and frequency depending upon the work load.
+
+In other words, the IP is designed in such a way that it does not consume fixed power all the time; instead, the power consumption depends on the performance level the IP is operating on. To implement this, in the IP design various performance modes are created. Each of the performance modes has an associated operating frequency and each of the operating frequencies has an associated voltage requirement; therefore, depending on the workload (and thereby the performance requirement), the system software can choose the operating mode.
+
+  5.  Clock Gating
+
+Consider a simple example, let’s say a flop is not switching states for considerable period of time. Since the clock to it is switching continuously, the clock tree buffers are switching states and hence consuming power. Also the flops are made up of latches, thus even though the input and output of the flop is not switching, some part of latch is switching and consuming power. In such scenarios, power is dissipated unnecessarily.
+
+It has been found that approximately 50% of the dynamic power dissipation is due to clock related circuit. One of the most commonly used low power technique is clock gating (CG). Fundamentally clock gating means stopping the clock to a logic block when the operations of that block are not needed (or the inputs to the block are not changing). Thus only leakage power dissipation takes place when a circuit/block is clock gated.
+
+  6.  Power Gating
+
+A logical extension to clock gating is power gating, in which the power or supply voltage to circuit blocks not in use are temporarily turned off. Typically the supply voltage is cut off by logic equivalent to switch, controlled by the Power Management Unit. Power gating is possible by realizing multiple power domains in the design as discussed here. Power gating saves the leakage power in addition to dynamic power.
+
+Now you must be wondering why we need clock gating, as power gating is a better option. The answer to it is, the time it takes to bring up the logical block from power off to power on is significant and noticeable thus it introduces much more latency in the operation compared to clock gating.
+
+<img width="705" height="102" alt="image" src="https://github.com/user-attachments/assets/001460e2-d509-4397-9629-5135c01504c7" />
+
+
+***********************
+ASIC Design Flow
+ASIC Design Flow Overview
+A typical ASIC design flow follows a structured methodology broken down into multiple stages. Some phases happen in parallel (e.g., design and verification), while others are sequential (e.g., synthesis must follow RTL design). The complete flow from concept to silicon typically takes 12-24 months for complex SoCs.
+<img width="577" height="422" alt="image" src="https://github.com/user-attachments/assets/cb89e71e-7aaf-4ff2-8f34-574adbfbf728" />
+
+<img width="893" height="778" alt="image" src="https://github.com/user-attachments/assets/e530c3bd-44b9-408e-81d8-015beda15c92" />
+<img width="950" height="534" alt="image" src="https://github.com/user-attachments/assets/1e60de1e-7e50-4e21-b8bb-1cfbaf0ed169" />
+
+
+***************
+Clock Tree Synthesis (CTS) 
+Clock Tree Synthesis (CTS) is one of the most critical steps in the VLSI Physical Design flow. If the floorplan defines the layout of a chip, and placement arranges its logic cells, then CTS gives life to the chip by delivering the clock signal uniformly and accurately. Without a properly built clock tree, timing closure becomes nearly impossible, and the chip may fail to function at its intended performance.
+
+ 
+
+This beginner-friendly guide breaks down what CTS is, why it's important, key challenges, and how the entire CTS process works, using simple explanations and real-world examples. The content is fully unique, SEO-optimized, and ideal for learners and young VLSI engineers.
+
+ 
+
+1. What is Clock Tree Synthesis (CTS)?
+ 
+
+Clock Tree Synthesis is the process of designing a balanced distribution network that delivers the clock signal from its source (PLL, clock port, or internal generator) to all sequential elements such as flip-flops and latches.
+
+ 
+
+Unlike ordinary signal nets, the clock signal must arrive at each sink:
+
+At the right time
+With minimal skew
+With controlled latency
+With low power consumption
+
+<img width="624" height="243" alt="image" src="https://github.com/user-attachments/assets/07107d15-2918-49c7-ae41-8b9e59fc0aca" />
+
+
+******************
+Static Timing Analysis (STA)
+
+
+
+
+Static Timing Analysis is defined as: a timing verification that ensures whether the various circuit timing are meeting the various timing requirements.
+
+ 
+
+One of the most important and challenging aspect in the ASIC/FPGA design flow is timing closure. Timing closure can be viewed as timing verification of the digital circuit. A digital circuit which is closed for timing will work at specified frequency (defined by designer in timing constraints) and thus promised PPA (performance, power and area) can be achieved. Static timing Analysis is the method by which one can determine if timing closure is achieved or not by doing timing analysis on all paths within the digital circuit. As the name suggest this kind of verification of digital circuit is done statically (no simulation of the digital logic is required). Static timing analysis make use of the timing arcs (defined by technology library) between all the start and end points of the digital circuit. One must be aware that since there is no simulation involved, static timing analysis will not check for functional correctness, rather it will only focus on timing.
+
+ 
+
+Before we dig deeper into how static timing analysis works, it is valuable to get some basic knowledge of terms used later.
+
+ 
+
+Timing Arcs: The timing arcs are parameters defined in the process library for each cell which define the delays of the cell across different PVT corners. static timing analysis uses those parameters to calculate the max and min delay through any library cell. For example, for a D Flipflop, technology library will include the parameters that define the setup time, hold time and C (clock) to Q (output) time (TCQ).
+
+ 
+
+TCQ: The TCQ is defined as time it takes for data to appear on output Q once clock C is triggered (pos edge or neg edge)
+
+ 
+
+Flip Flop TCQ Timing Arc
+
+Figure 1: D – Flip Flop TCQ Timing Arc
+
+ 
+
+Setup time: The time the input D must be stable before the clock C is triggered (pos edge or neg edge) is defined as setup time. If the data is not stable at least setup time before the clock edge, output will be undetermined.
+
+ 
+
+Hold time: The time the input D must be stable after the clock C is triggered (pos edge or neg edge). If the data is not stable for at least hold time after the clock edge, output will be undetermined.
+
+ 
+
+Static timing analysis can be done on both sequential and combinatorial parts of the design. In any sequential design path there is always one launch flop (driving the data) and one latch flop (capturing the data). Combinational paths can also be considered as sequential paths by assuming a virtual clock driving a virtual launch or virtual latch flop.
+
+ 
+
+
+<img width="768" height="325" alt="image" src="https://github.com/user-attachments/assets/20c2d6c8-3eaf-45cf-a0c5-4d11087a9c81" />
+
+
+**************************
+DFT
+**************
+0 Small RTL Projects That Teach You More Than Any Textbook
+Surabhi Misra
+Surabhi Misra
+
+
+Getting better at RTL design takes only two things: practice and patience. The best part is that you do not need a full SoC, an FPGA board or a semester-long project to learn powerful design skills. Small RTL modules teach more than people expect. A simple ALU or pipeline can give you a solid grasp of timing, handshakes, state machines and data-path control.
+
+Here are ten small projects you can build in Verilog or System Verilog. Each comes with a short “How to get started” guide so you can begin immediately.
+
+1. Build an 8-bit ALU
+An ALU looks simple, but it teaches a surprising amount.
+
+What you learn:
+• Combinational logic
+• Case statements
+• Flag generation (zero, carry, overflow)
+• Clean modular style
+
+
+*****************
+JTAG Architecture
+JTAG is the acronym for Joint Test Action Group, a name for the group of people that developed the IEEE 1149.1 standard.
+The functionality usually offered by JTAG is Debug Access (through User Data Registers) and Boundary Scan (through Boundary Scan Registers) –
+<img width="795" height="1024" alt="image" src="https://github.com/user-attachments/assets/04c0d7ba-fa7f-4f54-bbc4-f21d31073351" />
+
+
+
+**************
+DFT, Scan and ATPG
+The chip manufacturing process is prone to defects and the defects are commonly referred as faults. A fault is testable if there exists a well-specified procedure to expose it in the actual silicon. To make the task of detecting as many faults as possible in a design, we need to add additional logic; Design for testability (DFT) refers to those design techniques that make the task of testing feasible. In this article we will be discussing about the most common DFT technique for logic test, called Scan and ATPG. Before going into Scan and ATPG basics, let us first understand the concept of fault model.
+
+<img width="1024" height="456" alt="image" src="https://github.com/user-attachments/assets/43b88400-96a8-4599-b6e2-efe1d7ba79be" />
+
+
+****************
+On-chip Clock Controller
+<img width="840" height="441" alt="image" src="https://github.com/user-attachments/assets/49b7d61a-39ec-4963-bbdc-6164a2df0520" />
+
+
+*************
+Scan Clocking Architecture
+The clocking architecture of a design needs to be modified to support ‘Scan’ operation. In this article we will take an example of a very generic functional clocking architecture 
+<img width="1024" height="730" alt="image" src="https://github.com/user-attachments/assets/e0d29407-36cc-41eb-bee9-dac9d12d1629" />
+
+
+LFSR and Ring Generator
+An n-bit Linear Feedback Shift Register (LFSR) consists of ‘n’ memory elements (or flops) and XOR gates. There are basically two types of LFSR –
+
+   1.  Standard Form (also known as External Feedback LFSR)
+  2.  Modular Form (also known as Internal Feedback LFSR)
+
+LFSRs can be represented by its characteristics polynomial hnxn + hn-1xn-1 + . . . + h1x + h0, where the term hixi refers to the ith flop of the register. In standard form LFSR, if hi = 1, then there is a feedback tap taken from this flop and in modular form LFSR, if hi = 1, then there is a feedback to the output of this flop.
+
+Note: hN and h0 is always equals to 1 in a LFSR.
+
+
+Figure 1: Standard Form LFSR
+
+<img width="1024" height="180" alt="image" src="https://github.com/user-attachments/assets/c3587f33-a17c-4c50-869a-a79cda7bae00" />
+
+
+************
+Logic Built In Self Test (LBIST)
+LBIST is a form of built in self-test (BIST) in which the logic inside a chip can be tested on-chip itself without any expensive Automatic Test Equipment (ATE). A BIST engine is built inside the chip and requires only an access mechanism like the Test Access Port (TAP) to start.
+
+This article will describe about the BIST architecture in brief and Test Pattern Generator (TPG) used in LBIST. And we will discuss about the output Response Analyzer (RA) in this article.
+
+The general architecture of an on-chip BIST consists of 3 major components –
+
+  1.  BIST controller
+  2.  TPG (Test Pattern Generator)
+  3.  RA (Response Analyzer)
+  4.  <img width="492" height="290" alt="image" src="https://github.com/user-attachments/assets/b241dce2-c62b-482f-9eae-904df8cf9f41" />
+
+
+********************
+Test Compression
+The test data volume increases exponentially with increase in circuit size. For large circuits, the growing test data volume causes a significant increase in test cost because of much longer test time and elevated tester memory requirements to store the test data. Therefore test compression techniques are essential to reduce the test cost by reducing the Scan patterns while trying to keep the same test quality.
+
+Test Data Volume ≈ Number of Scan Cells in all the Scan Chains × Scan Patterns
+
+
+<img width="771" height="661" alt="image" src="https://github.com/user-attachments/assets/01e1d110-e174-4d27-a856-e3f91b7e12f7" />
+
+
+**********************
