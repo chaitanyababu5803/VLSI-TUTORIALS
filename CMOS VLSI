@@ -1,0 +1,517 @@
+CMOS VLSI 
+***********************
+CMOS VLSI (Complementary Metal-Oxide-Semiconductor Very-Large-Scale Integration) is the dominant technology used to create modern integrated circuits (ICs), allowing millions or billions of transistors to be packed onto a single silicon chip. 
+Core Concepts
+CMOS Technology: Uses complementary pairs of p-type (PMOS) and n-type (NMOS) transistors.
+VLSI Scale: Refers to the integration of thousands to billions of transistors into one chip, enabling complex systems like microprocessors and memory.
+Low Power Consumption: CMOS circuits draw significant power only during switching, leading to very low static power dissipation and minimal waste heat compared to older technologies. 
+Design & Architecture
+Logic Structure: CMOS gates consist of a Pull-Up Network (PUN) of PMOS transistors and a Pull-Down Network (PDN) of NMOS transistors.
+The CMOS Inverter: The most fundamental building block. When the input is low, the PMOS conducts (output high); when the input is high, the NMOS conducts (output low).
+Physical Design: Involves creating a layout on silicon using processes like n-well, p-well, or twin-tub to manage electrical properties and prevent issues like latch-up. 
+
+*******************
+VLSI Design - MOS Transistor
+https://www.tutorialspoint.com/vlsi_design/vlsi_design_mos_transistor.htm
+*****************.
+Complementary MOSFET (CMOS) technology is widely used today to form circuits in numerous and varied applications. Todays computers, CPUs and cell phones make use of CMOS due to several key advantages. CMOS offers low power dissipation, relatively high speed, high noise margins in both states, and will operate over a wide range of source and input voltages (provided the source voltage is fixed)
+
+For the processes we will discuss, the type of transistor available is the Metal-Oxide-Semiconductor Field Effect Transistor (MOSFET). These transistors are formed as a sandwich consisting of a semiconductor layer, usually a slice, or wafer, from a single crystal of silicon; a layer of silicon dioxide (the oxide) and a layer of metal.
+
+Structure of a MOSFET
+Structure of misfet
+As shown in the figure, MOS structure contains three layers −
+
+The Metal Gate Electrode
+
+The Insulating Oxide Layer (SiO2)
+
+P type Semiconductor (Substrate)
+
+MOS structure forms a capacitor, with gate and substrate are as two plates and oxide layer as the dielectric material. The thickness of dielectric material (SiO2) is usually between 10 nm and 50 nm. Carrier concentration and distribution within the substrate can be manipulated by external voltage applied to gate and substrate terminal. Now, to understand the structure of MOS, first consider the basic electric properties of P Type semiconductor substrate.
+
+Concentration of carrier in semiconductor material is always following the Mass Action Law. Mass Action Law is given by −
+
+[Math Processing Error]
+
+Where,
+
+n is carrier concentration of electrons
+
+p is carrier concentration of holes
+
+ni is intrinsic carrier concentration of Silicon
+
+Now assume that substrate is equally doped with acceptor (Boron) concentration NA. So, electron and hole concentration in ptype substrate is
+
+[Math Processing Error]
+
+[Math Processing Error]
+
+Here, doping concentration NA is (1015 to 1016 cm−3) greater than intrinsic concentration ni. Now, to understand the MOS structure, consider the energy level diagram of ptype silicon substrate.
+
+P-type Silicon Substrate
+As shown in the figure, the band gap between conduction band and valance band is 1.1eV. Here, Fermi potential ΦF is the difference between intrinsic Fermi level (Ei) and Fermi level (EFP).
+
+Where Fermi level EF depends on the doping concentration. Fermi potential ΦF is the difference between intrinsic Fermi level (Ei) and Fermi level (EFP).
+
+Mathematically,
+
+[Math Processing Error]
+
+The potential difference between conduction band and free space is called electron affinity and is denoted by qx.
+
+So, energy required for an electron to move from Fermi level to free space is called work function (qΦS) and it is given by
+
+[Math Processing Error]
+
+The following figure shows the energy band diagram of components that make up the MOS.
+
+Energy Level Diagram of Components
+As shown in the above figure, insulating SiO2 layer has large energy band gap of 8eV and work function is 0.95 eV. Metal gate has work function of 4.1eV. Here, the work functions are different so it will create voltage drop across the MOS system. The figure given below shows the combined energy band diagram of MOS system.
+
+Combined Energy Band Diagram
+As shown in this figure, the fermi potential level of metal gate and semiconductor (Si) are at same potential. Fermi potential at surface is called surface potential ΦS and it is smaller than Fermi potential ΦF in magnitude.
+
+Working of a MOSFET
+MOSFET consists of a MOS capacitor with two p-n junctions placed closed to the channel region and this region is controlled by gate voltage. To make both the p-n junction reverse biased, substrate potential is kept lower than the other three terminals potential.
+
+If the gate voltage will be increased beyond the threshold voltage (VGS>VTO), inversion layer will be established on the surface and n type channel will be formed between the source and drain. This n type channel will carry the drain current according to the VDS value.
+
+For different value of VDS, MOSFET can be operated in different regions as explained below.
+
+Linear Region
+At VDS = 0, thermal equilibrium exists in the inverted channel region and drain current ID = 0. Now if small drain voltage, VDS > 0 is applied, a drain current proportional to the VDS will start to flow from source to drain through the channel.
+
+The channel gives a continuous path for the flow of current from source to drain. This mode of operation is called linear region. The cross sectional view of an n-channel MOSFET, operating in linear region, is shown in the figure given below.
+
+Linear Region
+At the Edge of Saturation Region
+Now if the VDS is increased, charges in the channel and channel depth decrease at the end of drain. For VDS = VDSAT, the charges in the channel is reduces to zero, which is called pinch off point. The cross sectional view of n-channel MOSFET operating at the edge of saturation region is shown in the figure given below.
+
+Edge of Saturation Region
+Saturation Region
+For VDS>VDSAT, a depleted surface forms near to drain, and by increasing the drain voltage this depleted region extends to source.
+
+This mode of operation is called Saturation region. The electrons coming from the source to the channel end, enter in the drain depletion region and are accelerated towards the drain in high electric field.
+
+Saturation Region
+MOSFET Current Voltage Characteristics
+To understand the current voltage characteristic of MOSFET, approximation for the channel is done. Without this approximation, the three dimension analysis of MOS system becomes complex. The Gradual Channel Approximation (GCA) for current voltage characteristic will reduce the analysis problem.
+
+Gradual Channel Approximation (GCA)
+Consider the cross sectional view of n channel MOSFET operating in the linear mode. Here, source and substrate are connected to the ground. VS = VB = 0. The gate to source (VGS) and drain to source voltage (VDS) voltage are the external parameters that control the drain current ID.
+
+Gradual Channel Approximation
+The voltage, VGS is set to a voltage greater than the threshold voltage VTO, to create a channel between the source and drain. As shown in the figure, x direction is perpendicular to the surface and y direction is parallel to the surface.
+
+Here, y = 0 at the source end as shown in the figure. The channel voltage, with respect to the source, is represented by VC(Y). Assume that the threshold voltage VTO is constant along the channel region, between y = 0 to y = L. The boundary condition for the channel voltage VC are −
+
+[Math Processing Error]
+
+We can also assume that
+
+[Math Processing Error]
+ and
+
+[Math Processing Error]
+
+Let Q1(y) be the total mobile electron charge in the surface inversion layer. This electron charge can be expressed as −
+
+[Math Processing Error]
+
+The figure given below shows the spatial geometry of the surface inversion layer and indicate its dimensions. The inversion layer taper off as we move from drain to source. Now, if we consider the small region dy of channel length L then incremental resistance dR offered by this region can be expressed as −
+
+[Math Processing Error]
+
+Here, minus sign is due to the negative polarity of the inversion layer charge Q1 and n is the surface mobility, which is constant. Now, substitute the value of Q1(y) in the dR equation −
+
+[Math Processing Error]
+
+[Math Processing Error]
+
+Now voltage drop in small dy region can be given by
+
+[Math Processing Error]
+
+Put the value of dR in the above equation
+
+[Math Processing Error]
+
+[Math Processing Error]
+
+To obtain the drain current ID over the whole channel region, the above equation can be integrated along the channel from y = 0 to y = L and voltages VC(y) = 0 to VC(y) = VDS,
+
+[Math Processing Error]
+
+[Math Processing Error]
+
+[Math Processing Error]
+
+For linear region VDS < VGS − VTO. For saturation region, value of VDS is larger than (VGS − VTO). Therefore, for saturation region VDS = (VGS − VTO).
+
+[Math Processing Error]
+
+[Math Processing Error]
+
+[Math Processing Error]
+
+
+
+*****************************
+VLSI Design - MOS Inverter
+*********************
+The inverter is truly the nucleus of all digital designs. Once its operation and properties are clearly understood, designing more intricate structures such as NAND gates, adders, multipliers, and microprocessors is greatly simplified. The electrical behavior of these complex circuits can be almost completely derived by extrapolating the results obtained for inverters.
+
+The analysis of inverters can be extended to explain the behavior of more complex gates such as NAND, NOR, or XOR, which in turn form the building blocks for modules such as multipliers and processors. In this chapter, we focus on one single incarnation of the inverter gate, being the static CMOS inverter or the CMOS inverter, in short. This is certainly the most popular at present and therefore deserves our special attention.
+
+Principle of Operation
+The logic symbol and truth table of ideal inverter is shown in figure given below. Here A is the input and B is the inverted output represented by their node voltages. Using positive logic, the Boolean value of logic 1 is represented by Vdd and logic 0 is represented by 0. Vth is the inverter threshold voltage, which is Vdd /2, where Vdd is the output voltage.
+
+The output is switched from 0 to Vdd when input is less than Vth. So, for 0<Vin<Vth output is equal to logic 0 input and Vth<Vin< Vdd is equal to logic 1 input for inverter.
+
+Inverter
+The characteristics shown in the figure are ideal. The generalized circuit structure of an nMOS inverter is shown in the figure below.
+
+Generalized Circuit
+From the given figure, we can see that the input voltage of inverter is equal to the gate to source voltage of nMOS transistor and output voltage of inverter is equal to drain to source voltage of nMOS transistor. The source to substrate voltage of nMOS is also called driver for transistor which is grounded; so VSS = 0. The output node is connected with a lumped capacitance used for VTC.
+
+Resistive Load Inverter
+The basic structure of a resistive load inverter is shown in the figure given below. Here, enhancement type nMOS acts as the driver transistor. The load consists of a simple linear resistor RL. The power supply of the circuit is VDD and the drain current ID is equal to the load current IR.
+
+Resistive Load
+Circuit Operation
+When the input of the driver transistor is less than threshold voltage VTH (Vin < VTH), driver transistor is in the cut off region and does not conduct any current. So, the voltage drop across the load resistor is ZERO and output voltage is equal to the VDD. Now, when the input voltage increases further, driver transistor will start conducting the non-zero current and nMOS goes in saturation region.
+
+Mathematically,
+
+ID=Kn2[VGS−VTO]2
+
+Increasing the input voltage further, driver transistor will enter into the linear region and output of the driver transistor decreases.
+
+ID=Kn22[VGS−VTO]VDS−V2DS
+
+VTC of the resistive load inverter, shown below, indicates the operating mode of driver transistor and voltage points.
+
+Resistive Load Inverter
+Inverter with N type MOSFET Load
+The main advantage of using MOSFET as load device is that the silicon area occupied by the transistor is smaller than the area occupied by the resistive load. Here, MOSFET is active load and inverter with active load gives a better performance than the inverter with resistive load.
+
+Enhancement Load NMOS
+Two inverters with enhancement-type load device are shown in the figure. Load transistor can be operated either, in saturation region or in linear region, depending on the bias voltage applied to its gate terminal. The saturated enhancement load inverter is shown in the fig. (a). It requires a single voltage supply and simple fabrication process and so VOH is limited to the VDD − VT.
+
+Enhancement Load NMOS
+The linear enhancement load inverter is shown in the fig. (b). It always operates in linear region; so VOH level is equal to VDD.
+
+Linear load inverter has higher noise margin compared to the saturated enhancement inverter. But, the disadvantage of linear enhancement inverter is, it requires two separate power supply and both the circuits suffer from high power dissipation. Therefore, enhancement inverters are not used in any large-scale digital applications.
+
+Depletion Load NMOS
+Depletion Load NMOS
+Drawbacks of the enhancement load inverter can be overcome by using depletion load inverter. Compared to enhancement load inverter, depletion load inverter requires few more fabrication steps for channel implant to adjust the threshold voltage of load.
+
+The advantages of the depletion load inverter are - sharp VTC transition, better noise margin, single power supply and smaller overall layout area.
+
+As shown in the figure, the gate and source terminal of load are connected; So, VGS = 0. Thus, the threshold voltage of the load is negative. Hence,
+
+VGS,load>VT,load
+is satisfied
+
+Therefore, load device always has a conduction channel regardless of input and output voltage level.
+
+When the load transistor is in saturation region, the load current is given by
+
+ID,load=Kn,load2[−VT,load(Vout)]2
+
+When the load transistor is in linear region, the load current is given by
+
+ID,load=Kn,load2[2|VT,load(Vout)|.(VDD−Vout)−(VDD−Vout)2]
+
+The voltage transfer characteristics of the depletion load inverter is shown in the figure given below −
+
+VTC of Depletion Load
+CMOS Inverter Circuit, Operation and Description
+The CMOS inverter circuit is shown in the figure. Here, nMOS and pMOS transistors work as driver transistors; when one transistor is ON, other is OFF.
+
+CMOS Inverter Circuit
+This configuration is called complementary MOS (CMOS). The input is connected to the gate terminal of both the transistors such that both can be driven directly with input voltages. Substrate of the nMOS is connected to the ground and substrate of the pMOS is connected to the power supply, VDD.
+
+So VSB = 0 for both the transistors.
+
+VGS,n=Vin
+
+VDS,n=Vout
+
+And,
+
+VGS,p=Vin−VDD
+
+VDS,p=Vout−VDD
+
+When the input of nMOS is smaller than the threshold voltage (Vin < VTO,n), the nMOS is cut off and pMOS is in linear region. So, the drain current of both the transistors is zero.
+
+ID,n=ID,p=0
+
+Therefore, the output voltage VOH is equal to the supply voltage.
+
+Vout=VOH=VDD
+
+When the input voltage is greater than the VDD &plus; VTO,p, the pMOS transistor is in the cutoff region and the nMOS is in the linear region, so the drain current of both the transistors is zero.
+
+ID,n=ID,p=0
+
+Therefore, the output voltage VOL is equal to zero.
+
+Vout=VOL=0
+
+The nMOS operates in the saturation region if Vin > VTO and if following conditions are satisfied.
+
+VDS,n≥VGS,n−VTO,n
+
+Vout≥Vin−VTO,n
+
+The pMOS operates in the saturation region if Vin < VDD &plus; VTO,p and if following conditions are satisfied.
+
+VDS,p≤VGS,p−VTO,p
+
+Vout≤Vin−VTO,p
+
+For different value of input voltages, the operating regions are listed below for both transistors.
+
+Region	Vin	Vout	nMOS	pMOS
+A	< VTO, n	VOH	Cut off	Linear
+B	VIL	High ≈ VOH	Saturation	Linear
+C	Vth	Vth	Saturation	Saturation
+D	VIH	Low ≈ VOL	Linear	Saturation
+E	> (VDD &plus; VTO, p)	VOL	Linear	Cut off
+The VTC of CMOS is shown in the figure below −
+
+VTC of CMOS Inverter
+
+
+
+********************
+Combinational MOS Logic Circuits
+
+Previous
+Quiz
+Next
+Combinational logic circuits or gates, which perform Boolean operations on multiple input variables and determine the outputs as Boolean functions of the inputs, are the basic building blocks of all digital systems. We will examine simple circuit configurations such as two-input NAND and NOR gates and then expand our analysis to more general cases of multiple-input circuit structures.
+
+Next, the CMOS logic circuits will be presented in a similar fashion. We will stress the similarities and differences between the nMOS depletion-load logic and CMOS logic circuits and point out the advantages of CMOS gates with examples. In its most general form, a combinational logic circuit, or gate, performing a Boolean function can be represented as a multiple-input, single-output system, as depicted in the figure.
+
+Logic Circuit
+Node voltages, referenced to the ground potential, represent all input variables. Using positive logic convention, the Boolean (or logic) value of "1" can be represented by a high voltage of VDD, and the Boolean (or logic) value of "0" can be represented by a low voltage of 0. The output node is loaded with a capacitance CL, which represents the combined capacitances of the parasitic device in the circuit.
+
+CMOS Logic Circuits
+CMOS Two input NOR Gate
+The circuit consists of a parallel-connected n-net and a series-connected complementary p-net. The input voltages VX and VY are applied to the gates of one nMOS and one pMOS transistor.
+
+When either one or both inputs are high, i.e., when the n-net creates a conducting path between the output node and the ground, the p-net is cutoff. If both input voltages are low, i.e., the n-net is cut-off, then the p-net creates a conducting path between the output node and the supply voltage.
+
+For any given input combination, the complementary circuit structure is such that the output is connected either to VDD or to ground via a low-resistance path and a DC current path between the VDD and ground is not established for any input combinations. The output voltage of the CMOS, two input NOR gate will get a logic-low voltage of VOL = 0 and a logic-high voltage of VOH = VDD. The equation of the switching threshold voltage Vth is given by
+
+[Math Processing Error]
+
+Layout of CMOS 2-input NOR Gate
+Layout of CMOS
+The figure shows a sample layout of CMOS 2-input NOR gate, using single-layer metal and single-layer polysilicon. The features of this layout are −
+
+Single vertical polylines for each input
+Single active shapes for N and P devices, respectively
+Metal buses running horizontal
+The stick diagram for the CMOS N0R2 gate is shown in the figure given below; which corresponds directly to the layout, but does not contain W and L information. The diffusion areas are depicted by rectangles, the metal connections and solid lines and circles, respectively represent contacts, and the crosshatched strips represent the polysilicon columns. Stick diagram is useful for planning optimum layout topology.
+
+NOR gate stick diagram
+CMOS Two-input NAND Gate
+The circuit diagram of the two input CMOS NAND gate is given in the figure below.
+
+NAND Gate
+The principle of operation of the circuit is exact dual of the CMOS two input NOR operation. The n net consisting of two series connected nMOS transistor creates a conducting path between the output node and the ground, if both input voltages are logic high. Both of the parallelly connected pMOS transistor in p-net will be off.
+
+For all other input combination, either one or both of the pMOS transistor will be turn ON, while p net is cut off, thus, creating a current path between the output node and the power supply voltage. The switching threshold for this gate is obtained as −
+
+[Math Processing Error]
+
+The features of this layout are as follows −
+
+Single polysilicon lines for inputs run vertically across both N and P active regions.
+Single active shapes are used for building both nMOS devices and both pMOS devices.
+Power bussing is running horizontal across top and bottom of layout.
+Output wires runs horizontal for easy connection to neighboring circuit.
+Complex Logic Circuits
+NMOS Depletion Load Complex Logic Gate
+To realize complex functions of multiple input variables, the basic circuit structures and design principles developed for NOR and NAND can be extended to complex logic gates. The ability to realize complex logic functions, using a small number of transistors is one of the most attractive features of nMOS and CMOS logic circuits. Consider the following Boolean function as an example.
+
+[Math Processing Error]
+
+The nMOS depletion-load complex logic gate used to realize this function is shown in figure. In this figure, the left nMOS driver branch of three driver transistors is used to perform the logic function P (S &plus; T), while the right-hand side branch performs the function QR. By connecting the two branches in parallel, and by placing the load transistor between the output node and the supply voltage VDD, we obtain the given complex function. Each input variable is assigned to only one driver.
+
+complex logic gate
+Inspection of the circuit topology gives simple design principles of the pull-down network −
+
+OR operations are performed by parallel-connected drivers.
+AND operations are performed by series-connected drivers.
+Inversion is provided by the nature of MOS circuit operation.
+If all input variables are logic-high in the circuit realizing the function, the equivalent driver (W/L) ratio of the pull-down network consisting of five nMOS transistors is
+
+[Math Processing Error]
+
+Complex CMOS Logic Gates
+The realization of the n-net, or pull-down network, is based on the same basic design principles examined for nMOS depletion-load complex logic gate. The pMOS pull-up network must be the dual network of the n-net.
+
+It means all parallel connections in the nMOS network will correspond to a series connection in the pMOS network, and all series connection in the nMOS network correspond to a parallel connection in the pMOS network. The figure shows a simple construction of the dual p-net (pull-up) graph from the n-net (pull-down) graph.
+
+Dual Graph Concept
+Each driver transistor in the pull-down network is shown by ai and each node is shown by a vertex in the pull-down graph. Next, a new vertex is created within each confined area in the pull graph, and neighboring vertices are connected by edges which cross each edge in the pull-down graph only once. This new graph shows the pull-up network.
+
+Boolean function
+Layout Technique using Euler Graph Method
+The figure shows the CMOS implementation of a complex function and its stick diagram done with arbitrary gate ordering that gives a very non-optimum layout for the CMOS gate.
+
+In this case, the separation between the polysilicon columns must allow diffusion-todiffusion separation in between. This certainly consumes a considerably amount of extra silicon area.
+
+complex functionstick diagram
+By using the Euler path, we can obtain an optimum layout. The Euler path is defined as an uninterrupted path that traverses each edge (branch) of the graph exactly once. Find Euler path in both the pull-down tree graph and the pull-up tree graph with identical ordering of the inputs.
+
+
+**********************
+VLSI Design - Sequential MOS Logic Circuits
+
+Previous
+Quiz
+Next
+Logic circuits are divided into two categories − (a) Combinational Circuits, and (b) Sequential Circuits.
+
+In Combinational circuits, the output depends only on the condition of the latest inputs.
+
+In Sequential circuits, the output depends not only on the latest inputs, but also on the condition of earlier inputs. Sequential circuits contain memory elements.
+
+Classification of Logic Circuits
+Sequential circuits are of three types −
+
+Bistable − Bistable circuits have two stable operating points and will be in either of the states. Example − Memory cells, latches, flip-flops and registers.
+
+Monostable − Monostable circuits have only one stable operating point and even if they are temporarily perturbed to the opposite state, they will return in time to their stable operating point. Example: Timers, pulse generators.
+
+Astable − circuits have no stable operating point and oscillate between several states. Example − Ring oscillator.
+
+CMOS Logic Circuits
+SR Latch based on NOR Gate
+Gate Level
+If the set input (S) is equal to logic "1" and the reset input is equal to logic "0." then the output Q will be forced to logic "1". While [Math Processing Error]
+ is forced to logic "0". This means the SR latch will be set, irrespective of its previous state.
+
+Similarly, if S is equal to "0" and R is equal to "1" then the output Q will be forced to "0" while [Math Processing Error]
+ is forced to "1". This means the latch is reset, regardless of its previously held state. Finally, if both of the inputs S and R are equal to logic "1" then both output will be forced to logic "0" which conflicts with the complementarity of Q and [Math Processing Error]
+.
+
+Therefore, this input combination is not allowed during normal operation. Truth table of NOR based SR Latch is given in table.
+
+S	R	Q	[Math Processing Error]
+Operation
+0	0	Q	[Math Processing Error]
+Hold
+1	0	1	0	Set
+0	1	0	1	Reset
+1	1	0	0	Not allowed
+CMOS SR latch based on NOR gate is shown in the figure given below.
+
+CMOS SR latch
+If the S is equal to VOH and the R is equal to VOL, both of the parallel-connected transistors M1 and M2 will be ON. The voltage on node [Math Processing Error]
+ will assume a logic-low level of VOL = 0.
+
+At the same time, both M3 and M4 are turned off, which results in a logic-high voltage VOH at node Q. If the R is equal to VOH and the S is equal to VOL, M1 and M2 turned off and M3 and M4 turned on.
+
+SR Latch based on NAND Gate
+SR Latch
+Block diagram and gate level schematic of NAND based SR latch is shown in the figure. The small circles at the S and R input terminals represents that the circuit responds to active low input signals. The truth table of NAND based SR latch is given in table
+
+S	R	Q	Q′	
+0	0	NC	NC	No change. Latch remained in present state.
+1	0	1	0	Latch SET.
+0	1	0	1	Latch RESET.
+1	1	0	0	Invalid condition.
+If S goes to 0 (while R = 1), Q goes high, pulling [Math Processing Error]
+ low and the latch enters Set state
+
+S = 0 then Q = 1 (if R = 1)
+
+If R goes to 0 (while S = 1), Q goes high, pulling [Math Processing Error]
+ low and the latch is Reset
+
+R = 0 then Q = 1 (if S = 1)
+
+Hold state requires both S and R to be high. If S = R = 0 then output is not allowed, as it would result in an indeterminate state. CMOS SR Latch based on NAND Gate is shown in figure.
+
+CMOS on NAND gate
+Depletion-load nMOS SR Latch based on NAND Gate is shown in figure. The operation is similar to that of CMOS NAND SR latch. The CMOS circuit implementation has low static power dissipation and high noise margin.
+
+CMOS Logic Circuits
+Clocked SR Latch
+The figure shows a NOR-based SR latch with a clock added. The latch is responsive to inputs S and R only when CLK is high.
+
+Clocked SR Latch
+When CLK is low, the latch retains its current state. Observe that Q changes state −
+
+When S goes high during positive CLK.
+On leading CLK edge after changes in S & R during CLK low time.
+A positive glitch in S while CLK is high
+When R goes high during positive CLK.
+implementation of clocked NOR
+CMOS AOI implementation of clocked NOR based SR latch is shown in the figure. Note that only 12 transistors required.
+
+When CLK is low, two series terminals in N tree N are open and two parallel transistors in tree P are ON, thus retaining state in the memory cell.
+
+When clock is high, the circuit becomes simply a NOR based CMOS latch which will respond to input S and R.
+
+Clocked SR Latch based on NAND Gate
+
+based on NAND Gate
+Circuit is implemented with four NAND gates. If this circuit is implemented with CMOS then it requires 16 transistors.
+
+The latch is responsive to S or R only if CLK is high.
+If both input signals and the CLK signals are active high: i.e., the latch output Q will be set when CLK = "1" S = "1" and R = "0"
+Similarly, the latch will be reset when CLK = "1," S = "0," and
+When CLK is low, the latch retains its present state.
+
+Clocked JK Latch
+Clocked JK
+The figure above shows a clocked JK latch, based on NAND gates. The disadvantage of an SR latch is that when both S and R are high, its output state becomes indeterminant. The JK latch eliminates this problem by using feedback from output to input, such that all input states of the truth table are allowable. If J = K = 0, the latch will hold its present state.
+
+If J = 1 and K = 0, the latch will set on the next positive-going clock edge, i.e. Q = 1, [Math Processing Error]
+ = 0
+
+If J = 0 and K = 1, the latch will reset on the next positive-going clock edge, i.e. Q = 1 and [Math Processing Error]
+ = 0.
+
+If J = K = 1, the latch will toggle on the next positive-going clock edge
+
+The operation of the clocked JK latch is summarized in the truth table given in table.
+
+J
+
+K
+
+Q
+
+[Math Processing Error]
+S
+
+R
+
+Q
+
+[Math Processing Error]
+Operation
+
+0	0	0	1	1	1	0	1	Hold
+1	0	1	1	1	0
+0	1	0	1	1	1	0	1	Reset
+1	0	1	0	0	1
+1	0	0	1	0	1	1	0	Set
+1	0	1	1	1	0
+1	1	0	1	0	1	1	0	toggle
+1	0	1	0	0	1
+CMOS D Latch Implementation
+CMOS Gate levelCMOS D Latch
+The D latch is normally, implemented with transmission gate (TG) switches as shown in the figure. The input TG is activated with CLK while the latch feedback loop TG is activated with CLK. Input D is accepted when CLK is high. When CLK goes low, the input is opencircuited and the latch is set with the prior data D.
