@@ -1,0 +1,31 @@
+****************************
+https://vlsitutorials.com/power-management-techniques-vlsi/
+*********************************
+https://www.chipverify.com/verilog/asic-soc-chip-design-flow
+
+Low-power VLSI design techniques reduce dynamic (
+) and static leakage power through strategies like clock gating, power gating, Multi-Vt, and Multi-VDD. Key methods involve reducing switching activity (
+), supply voltage (
+), and frequency (
+), or cutting power to idle blocks. These techniques are crucial for extending battery life in modern, high-density, low-power consumer electronics. 
+Core Low-Power Techniques in VLSI
+Clock Gating (Dynamic Power Reduction): Disables the clock signal to idle circuit blocks, preventing unnecessary switching activity and saving substantial dynamic power. Often requires a latch to prevent glitches.
+Power Gating (Static Leakage Reduction): Uses sleep transistors to switch off the power supply to idle circuit blocks, drastically reducing static leakage current.
+Multi-Vt Design (Multi-Threshold CMOS): Employs high threshold voltage (HVT) transistors for non-critical paths to minimize leakage, while using low threshold voltage (LVT) transistors for timing-critical paths to maintain performance.
+Multi-VDD Design (Voltage Islands): Operates different parts of the chip at varying supply voltages; non-critical logic runs at lower voltage, reducing both 
+ components of power.
+Dynamic Voltage and Frequency Scaling (DVFS): Adjusts the voltage and frequency dynamically based on the workload requirements, optimizing power usage without sacrificing performance when needed.
+Operand Isolation: Prevents input operands from reaching combinational logic blocks when the result is not needed, minimizing switching activity.
+Layout and Optimization Techniques: Includes using Grey coding for counters to minimize signal transitions and utilizing specialized routing techniques (like smart NDRs) to reduce capacitance. 
+Low-Power Design Flow
+System Level: Algorithm selection (e.g., using Gray code instead of binary) and energy-efficient architecture.
+RTL Level: Clock gating, operand isolation, and power-aware logic optimization using tools like Synopsys Design Compiler.
+Physical Level: Power gating insertion, Multi-Vt library usage, and optimized placement and routing. 
+Key Terminology and Tools
+UPF (Unified Power Format): Used to define power intent, such as isolation cells, level shifters, and power domains.
+EDA Tools: Synopsys Power Compiler, Cadence Genus, and PrimePower are standard for power-aware synthesis and analysis.
+Static Power: Power consumed due to leakage current even when the circuit is idle.
+Dynamic Power: Power consumed during switching activity. 
+Common Pitfalls
+Clock Gating: Improper implementation can cause clock skew or race conditions.
+Power Gating: Requires careful design of retention registers to save data before powering down. 
