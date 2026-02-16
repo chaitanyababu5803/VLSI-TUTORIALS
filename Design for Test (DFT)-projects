@@ -1,0 +1,442 @@
+Design for Test (DFT) techniques—including scan insertion, ATPG, and memory BIST—are critical for identifying manufacturing defects in VLSI chips by adding test logic during design. Key concepts include scan chain architecture, fault modeling (stuck-at, transition), test compression, and JTAG, aimed at increasing test coverage and reducing costs. 
+Key DFT Concepts & Tutorials
+Introduction to DFT: Slideshare provides an overview of why DFT is essential, defining it as adding extra logic for post-production testing.
+Scan Design & Insertion: This involves replacing standard flip-flops with scan flip-flops to make internal nodes controllable and observable. Key topics include Scan Design Rules, DRC checks, and inserting scan chains.
+ATPG (Automatic Test Pattern Generation): Learn to generate, simulate, and apply test patterns to detect defects (stuck-at, transition faults).
+Memory BIST (Built-In Self-Test): Essential for testing embedded memories by adding dedicated controllers for self-testing.
+JTAG & Boundary Scan: Understand IEEE 1149.1 standards for testing interconnects between chips on a board.
+Test Compression: Techniques to reduce test application time and data volume. 
+
+DFT
+I would suggest you to go through the topics in the sequence shown below –
+
+DFT, Scan & ATPG
+What is DFT
+Fault models
+Basics of Scan
+How test clock is controlled for Scan Operation using On-chip Clock Controller.
+Why do we need OCC
+How test clock is controlled by OCC
+Example of a simple OCC with its systemverilog code
+How to define a clock architecture for Scan.
+How to handle clock mux and clock divider
+How to put OCC
+LFSR and Ring generator concepts (to learn test compression)
+Types of LFSR
+How to transform a modular type LFSR to Ring generator
+Logic Built in Self Test (LBIST)
+Basics of LBIST
+Test Pattern Generator
+Phase shifter
+How to find seed and degree of LFSR
+And a separate page specifically for Response Analyzer(RA) of LBIST
+Role of RA
+Characteristics of good RA
+Aliasing
+Probability of Aliasing
+LFSR based serial RA
+CRC theory
+LFSR based parallel RA (or MISR)
+Masking in MISR
+Test compression which cover topics like –
+Basics of test compression and EDT
+EDT – Decompressor
+EDT – Compactor
+
+
+
+******************************
+
+https://vlsitutorials.com/dft-tutorials/
+***************
+DFT, Scan and ATPG
+The chip manufacturing process is prone to defects and the defects are commonly referred as faults. A fault is testable if there exists a well-specified procedure to expose it in the actual silicon. To make the task of detecting as many faults as possible in a design, we need to add additional logic; Design for testability (DFT) refers to those design techniques that make the task of testing feasible. In this article we will be discussing about the most common DFT technique for logic test, called Scan and ATPG. Before going into Scan and ATPG basics, let us first understand the concept of fault model.
+
+Fault Models
+
+Fault models abstract the behavior of manufacturing defects so that test vectors can be generated to detect them.
+
+  •  Functional Defects : Stuck-at Fault Model
+  •  Current defects : Pseudo Stuck-at Fault Model (IDDQ)
+  •  Speed defects: At-speed Fault Model, Path Delay Fault Model
+
+However in this article we will be discussing about two most common fault models: stuck-at and at-speed fault models.
+
+  1.  Stuck-at Faults
+
+This is the most common fault model used in industry. It models manufacturing defects which occurs when a circuit node is shorted to VDD (stuck-at-1 fault) or GND (stuck-at-0 fault) permanently. The fault can be at the input or output of a gate. Thus a simple 2-input AND gate has six possible stuck-at faults.
+
+In the circuit shown in Figure 1, suppose we have a stuck-at-0 fault at the output of an AND gate. Note one important thing, there are three input ports in the circuit, thus we can have a combination of eight different inputs or patterns {000, 001, 010, 011, 100, 101, 110, 111}; out of the eight patterns, only two patterns {011, 111} will be able to detect this fault because with rest of the patterns the expected output will be same as the actual circuit output in the presence of this s-a-0 fault. This is a small circuit so we can easily find the pattern that can detect this fault, but what about much bigger circuits? Well we don’t have to worry about it as the CAD tools (ATPG tools) will do that for us. The ATPG tools will try to generate the stuck-at fault patterns required to test all the possible fault locations using complex algorithms, but if it is unable to find patterns for few faults, then it will classify those faults as untestable.
+
+
+Figure 1: stuck-at-0 fault in a circuit
+  2.  At-speed Faults
+
+It models the manufacturing defects that behave as gross delays on gate input-output ports. So each port is tested for logic 0-to-1 transition delay (slow-to-rise fault) or logic 1-to-0 transition delay (slow-to-fall fault). Like stuck-at faults, the at-speed fault can be at the input or output of a gate, thus a simple 2-input AND gate has six possible at-speed faults.
+
+In the circuit shown in Figure 2, suppose we have a slow-to-fall fault at the output of an AND gate. As shown, a slower 1-to-0 transition at the output of AND gate can affect the value captured by the Flop 2 at its capture edge. It is important to note that only with an initial state ‘1’ in Flop 1 and 010 at the input, we will be able to detect this fault. And like stuck-at fault pattern generation, the ATPG tools will try to generate the at-speed fault patterns required to test all the possible fault locations.
+
+
+Figure 2: slow-to-fall fault in a circuit
+Scan and ATPG
+
+Scan is the internal modification of the design’s circuitry to increase its test-ability. ATPG stands for Automatic Test Pattern Generation; as the name suggests, this is basically the generation of test patterns. In other words, we can say that Scan makes the process of pattern generation easier for detection of the faults we discussed earlier.
+
+
+Figure 3: A typical sequential circuit (before scan insertion)
+To test a fault we need to initialize the flops to the required values as we had shown while discussing about stuck-at faults and at-speed faults. In a bigger sequential circuit (without scan), it is difficult to control the flop’s value through primary inputs and observe the captured response in primary outputs. To solve this issue we do ‘Scan Insertion’ during synthesis.
+
+The goal of ‘Scan Insertion’ is to make a difficult-to-test sequential circuit behave (during testing process) like an easier-to-test combinational circuit. Achieving this goal involves two steps –
+
+  1.  Converting Regular Flop to Scan Flop
+
+All the flops in the design are converted into scan flops (as shown in Figure 4), except –
+  •  The ones that are excluded by user. These are called non-scan flops.
+  •  The ones that have DFT DRC violation(s).
+
+
+Figure 4: Regular flop vs Scan flop
+  2.  Stitching the Scan Flops to form Scan Chains
+
+The scan flops are stitched to form scan chain(s) (as shown in Figure 5). The number of scan chains depends upon various user inputs like –
+  •  Length of scan chain
+  •  Clock domain mixing
+  •  Power domain mixing
+  •  Voltage domain mixing
+
+
+Figure 5: A typical sequential circuit compatible for Scan and ATPG (after scan insertion)
+To initialize any flop to a value (refer the Figure 5), we simply make the SE = 1, such that SI to Q path is activated and we shift in the required values serially through a top level primary input called Scan-Input. Once the required values are loaded to the flops, we capture the values from combinational circuit by making SE = 0. And to observe the captured response we make the SE = 1 and serially shift out the captured data through a primary output called Scan-Output. Thus in a way, we can say the scan flop’s output (Q) act as pseudo primary output of the design and the scan flop’s input (D) act as pseudo primary inputs to the design, thereby making it a pseudo combination circuit.
+
+Once the patterns are generated, the expected response of the circuit for each pattern is obtained in pre-silicon. The expected responses along with the patterns are then stored in the memory of Automatic Test Equipment (ATE). In post-silicon, the manufactured chip is tested using the ATE, which loads the pattern and compares it with the expected response for pass or fail status.
+
+
+
+
+************************
+ls
+
+Power
+Power Dissipation
+Power Management Techniques
+Isolation cells and Level Shifter cells
+Retention cells
+UPF command syntax
+UPF
+DFT
+DFT, Scan and ATPG
+On-chip Clock Controller
+Scan Clocking Architecture
+LFSR and Ring Generator
+Logic Built In Self Test (LBIST)
+Response Analyzer
+Test Compression
+STA
+Synthesis Timing Constraints
+Constraining timing paths in Synthesis – Part 1
+Constraining timing paths in Synthesis – Part 2
+Constraining Multiple Synchronous Clock Design in Synthesis
+Constraining Generated Clocks and Asynchronous Clocks in Synthesis
+Constraining Logically Exclusive Clocks in Synthesis
+Constraining Multi-Cycle Path in Synthesis
+JTAG
+JTAG Architecture
+TAP and TAP Controller
+Instruction Register and Instruction Decoder
+Data Registers
+Example showing JTAG Operation
+Other
+Glitch free clock mux
+On-chip Clock Controller
+On-chip Clock Controllers (OCC) are also known as Scan Clock Controllers (SCC). OCC is the logic inserted on the SOC for controlling clocks during silicon testing on ATE (Automatic test Equipment). Since at-speed testing requires two clock pulses in capture mode with a frequency equal to the functional clock frequency, without OCC we need to provide these at-speed pulses through I/O pads. But these pads has limitation in terms of maximum frequency they can support; OCC on other hand uses internal PLL clock for generating clock pulses for test. During stuck-at testing, the OCC ensures only one clock pulse is generated in the capture phase. Similarly, during at-speed testing, the OCC ensures two clock pulses are generated in the capture phase, having a frequency equal to frequency of the functional clock.
+
+Therefore all the test clocks in a scan friendly design is routed through an OCC, which controls the clock operation in scan mode (both in stuck-at and at-speed testing) and bypasses the functional clock in functional mode. You can check here, how the clocking architecture is modified with OCCs to support scan.
+
+In this article we will be discussing about a very basic OCC design with the sole purpose of demonstrating how it work. However industry standard OCCs are much more advanced and robust to clock glitches than the OCC discussed here.
+
+
+Figure 1: Schematic of a basic On-chip Clock Controller structure (having a n-bit shift register)
+When the circuit is in functional mode (Test Mode = 0), the OCC bypasses the functional clock (Refer Figure 1). But during the shift phase (Shift Enable = 1), the Scan Clock is propagated at the output of OCC. In capture phase (Shift Enable = 0), the shift register starts shifting ‘1’ and enables the Clock Gate, to allow single pulse or double pulse, depending on the type of testing. The OCC generates one clock pulse in stuck-at testing (At-speed Mode = 0) and two clock pulses in at-speed testing (At-speed Mode = 1).
+
+The behavior of this OCC (having a 5-bit shift register) in at-speed testing is shown in Figure 2. The two capture pulses came after 5 positive edges of the functional clock (as we are using a 5-bit shift register).
+
+NOTE: Once the Shift Enable is asserted Low, the n-bit shift register decides the delay in terms of the number of positive edges of the functional clock, after which the functional clock is propagated at the output of the OCC.
+
+
+Figure 2: Simulation waveform of the OCC structure shown in Figure 1 (having a 5-bit shift register)
+Systemverilog code of the OCC:
+
+module occ
+#(
+     parameter SHIFT_REG_BITS = 5
+)
+(
+     input logic test_mode,
+     input logic atspeed_mode,
+     input logic shift_en,
+     input logic scan_clk,
+     input logic func_clk,
+     output logic occ_out_clk
+)
+     logic cg_en;
+     logic cg_out_clk;
+     logic sync_flop;
+     logic [SHIFT_REG_BITS-1:0]shift_reg;
+
+     always @(func_clk or cg_en) begin
+         if (cg_en == 1)
+             cg_out_clk = func_clk;
+         else
+             cg_out_clk = 0;
+     end
+
+     always_ff @(posedge scan_clk) begin
+         sync_flop <= ~shift_en;
+     end
+
+     always_ff @(posedge func_clk) begin
+         shift_reg <= shift_reg << 1;
+         shift_reg[0] <= sync_flop;
+     end
+
+     assign occ_out_clk = test_mode ? (shift_en ? scan_clk : cg_out_clk) : func_clk;
+
+     assign cg_en = atspeed_mode ? (~shift_reg[SHIFT_REG_BITS-1] & shift_reg[SHIFT_REG_BITS-3]) : (~shift_reg[SHIFT_REG_BITS-1] & shift_reg[SHIFT_REG_BITS-2]);
+
+endmodule
+
+Share this:
+
+
+
+*********************************
+Scan Clocking Architecture
+The clocking architecture of a design needs to be modified to support ‘Scan’ operation. In this article we will take an example of a very generic functional clocking architecture as shown in Figure 1 and modify it.
+
+
+Figure 1: An example of a typical clocking architecture (without considering scan testing requirement)
+The given scenario –
+
+As shown in Figure 1, there is a PLL which is generating three different clocks (of frequency 500 MHz, 400 MHz and 100 MHz).  The cloud like structures in the figure indicates different clock domains (having the logic we want to test).
+
+There are two dividers –
+  1.  DIV (2) – which divides the input clock by 2. So the frequency of the clock at the output of divider is 200 MHz.
+  2.  DIV (1 or 4) – which either divides the input clock by 4 or bypasses it without any division, depending upon the functional requirement. So the frequency of clock at the output of divider is either 500 MHz or 125 MHz.
+
+The dividers have functional control that determines the division ratio of the divider. The divider ‘DIV (2)’ always divides the input clock by a constant value of 2; typically in such dividers the functional control, excluding the reset to divider is likely to be tied to a constant value in the design. But the divider ‘DIV (1 or 4)’ can either divide the input by 4 or bypass it; typically the functional control of such dividers are controlled by a FSM (or any other controlling logic).
+
+There is also a clock mux, which has a functional control that selects which clock it should propagate at its output. The frequency of the clock at the clock mux output can be either 200 MHz (from the divider) or 100 MHz (from the PLL). Like the dividers, the functional control in a clock mux is typically controlled by a FSM (or any other controlling logic).
+
+Modifications required –
+
+Now let us go through the modifications needed in clocking architecture for making the design ‘Scan’ friendly –
+
+In stuck-at testing the frequency of the clock domain we will be testing doesn’t matter; but in at-speed testing, we should be testing the clock domain at the maximum frequency it supports because of the reason discussed here. The frequency shown in red inside the clock domains (cloud like structures) in Figure 4, indicates the maximum clock frequency of that clock domain.
+
+  1.  Since we have two clock dividers and one clock mux in our design, we have to ensure the clock with the highest frequency is propagated at the output of dividers and clock mux for at-speed testing at correct frequency.
+
+    1.1.  Clock mux – Maximum possible frequency at the output is 200 MHz. Since the FSM controlling the select pin of clock mux will be part of scan chains, it will toggle during testing. Hence the clock at the output of the clock mux becomes unpredictable and can be any one of its input at any instance. To prevent this, we need to add a simple mux as shown in Figure 4, which will mask the functional control in scan mode (Test Mode = 1), to select the clock with highest frequency (in this case the 200 MHz clock).
+
+    1.2.  ‘DIV (2)’ – The 200 MHz clock at the output of clock mux is coming from the clock divider ‘DIV (2)’, thus ‘DIV (2)’ should function as a divider throughout the scan mode, so that we will get the required 200 MHz clock. If we scan the divider, the logic responsible for dividing the clock will become part of scan chain and will toggle during scan mode, resulting in clock of unpredictable frequency at the output of divider; so we should not scan this divider. Also we have to mask the reset or any other functional control that it likely to affect the functionality of the divider as shown in Figure 2.
+
+
+Figure 2: Diagram showing the the modifications required for divider DIV(2)
+    1.3.  ‘DIV (1 or 4)’ – We need the undivided clock of 500 MHz (fastest clock), thus we need to mask the functional control to select the undivided clock in scan mode, as shown in Figure 3. Since we are bypassing the divider, we can scan this divider as it will not affect the divider output.
+
+
+Figure 3: Diagram showing the modifications required for divider DIV(1 or 4)
+  2.  Then we need to modify the clocking architecture to add an On-chip Clock Controller(OCC) for every clock domain, as shown in Figure 4. We have six clock domains, thus six OCCs. As discussed here, the OCC controls the clock operation required for testing a circuit.
+
+Although the scan clocking architecture (shown in Figure 4) can be further optimized for this particular example, but this is a much cleaner and generic representation to illustrate how we need to define a Scan friendly clocking architecture.
+
+Note: Ensure all the clock(s) to the input of a divider or a clock mux should be free running, meaning it should not be coming from an OCC.
+
+
+Figure 4: Modification required in the clocking architecture shown in Figure 1, to support ‘Scan’ operation
+
+
+*********************************
+LFSR and Ring Generator
+An n-bit Linear Feedback Shift Register (LFSR) consists of ‘n’ memory elements (or flops) and XOR gates. There are basically two types of LFSR –
+
+   1.  Standard Form (also known as External Feedback LFSR)
+  2.  Modular Form (also known as Internal Feedback LFSR)
+
+LFSRs can be represented by its characteristics polynomial hnxn + hn-1xn-1 + . . . + h1x + h0, where the term hixi refers to the ith flop of the register. In standard form LFSR, if hi = 1, then there is a feedback tap taken from this flop and in modular form LFSR, if hi = 1, then there is a feedback to the output of this flop.
+
+Note: hN and h0 is always equals to 1 in a LFSR.
+
+
+Figure 1: Standard Form LFSR
+
+Figure 2: Modular Form LFSR
+Standard Form LFSR	Modular Form LFSR
+The modulo-2 sum of the selected stages indicated by the characteristics polynomial is fed back to the 1st stage of the LFSR.	The output of the last stage of the LFSR is fed back to the stages indicated by the characteristics polynomial.
+The speed is limited by the depth of the linear logic in its feedback path. Effected speed is determined by the number of XOR gates in the feedback path.	Implementation involves a large fan-out on the output of the last stage. Theoretically up to ‘n’ fan-outs possible for a n-bit LFSR, which leads to timing challenges for large LFSRs.
+To avoid these issues, EDT uses a Ring LFSR structure (called Ring Generator). This is a simple LFSR structure folded back on itself to form a ring with multiple tap points. Shown below is an example of a simple 8 bits Ring Generator implementing the polynomial, f(x) = x8 + x5 + x2 + 1.
+
+
+Figure 3: Ring LFSR structure
+
+
+
+
+***********************************
+Logic Built In Self Test (LBIST)
+LBIST is a form of built in self-test (BIST) in which the logic inside a chip can be tested on-chip itself without any expensive Automatic Test Equipment (ATE). A BIST engine is built inside the chip and requires only an access mechanism like the Test Access Port (TAP) to start.
+
+This article will describe about the BIST architecture in brief and Test Pattern Generator (TPG) used in LBIST. And we will discuss about the output Response Analyzer (RA) in this article.
+
+The general architecture of an on-chip BIST consists of 3 major components –
+
+  1.  BIST controller
+  2.  TPG (Test Pattern Generator)
+  3.  RA (Response Analyzer)
+
+
+Figure 1: General architecture of an on-chip BIST
+The basic mechanism of LBIST is it uses a Linear Feedback Shift Register (LFSR) to generate the inputs to the device’s internal scan chain, initiate a functional cycle to capture the response of the device, and then compress the captured response using a multiple input signature register (MISR). The compressed response that comes out of the MISR is called the signature. Any corruption in the output signature indicates a defect in the device.
+
+Test Pattern Generator (TPG)
+
+It generates the test patterns required to sensitize the faults and propagate the effect to the outputs (of the CUT).  Typically a Standard form LFSR is used for generating pseudo random patterns which acts as the input test vector. Each flop in the LFSR feeds a scan chain as shown in the Figure 2. In pseudo random patterns, the patterns are repeated after certain interval of time, which is why we use the term ‘pseudo’.
+
+
+******************
+Response Analyzer
+What is the role of Response Analyzer (RA)?
+
+  •  It compresses the CUT output responses into a small signature, so that it can be stored on-chip.
+  •  It compares the signature (generated in silicon) with the gold signature (generated in pre silicon) to determine Pass/Fail.
+  •  It is also called signature analyzer or output response analyzer.
+
+Note: Gold signature meaning the signature generated in the absence of any fault
+
+What are the characteristics of a good RA?
+
+  •  The signature generated should be as small as possible, so that it occupies less memory while storing the gold signature on-chip.
+  •  It should have correct Pass/Fail decision, i.e. low aliasing.
+  •  The RA logic should be as small as possible, implies less area overhead.
+  •  It should support diagnosis, implies when CUT fails it should be able to find the source of failure.
+
+Note: It is very difficult to meet all the above requirements in the same RA
+
+Aliasing
+
+  •  Aliasing occurs when the signature generated by a faulty output is same as the gold signature. Signature faulty o/p = Signature good o/p
+  •  Thus aliasing can lead to loss in fault coverage as we cannot cover the faults that will be generating the gold signature.
+
+
+
+************************
+Test Compression
+The test data volume increases exponentially with increase in circuit size. For large circuits, the growing test data volume causes a significant increase in test cost because of much longer test time and elevated tester memory requirements to store the test data. Therefore test compression techniques are essential to reduce the test cost by reducing the Scan patterns while trying to keep the same test quality.
+
+Test Data Volume ≈ Number of Scan Cells in all the Scan Chains × Scan Patterns
+
+
+In the International Technology Roadmap for Semiconductor (ITRS) 2013, it was predicted that more than 1000x test compression would be needed by 2020. Although there exists software techniques for test compression that are implemented by Automatic Test Pattern Generation(ATPG) tools in the form of complex algorithm, still it is not enough to achieve high test compression. Therefore we go for Hardware based test compression techniques by adding additional logic to the circuit, at the cost of increased area.
+
+
+Figure 1: A typical implementation without test compression logic
+
+
+
+**************************
+JTAG Architecture
+JTAG is the acronym for Joint Test Action Group, a name for the group of people that developed the IEEE 1149.1 standard.
+The functionality usually offered by JTAG is Debug Access (through User Data Registers) and Boundary Scan (through Boundary Scan Registers) –
+
+  •  Debug Access is used by debugger tools to access the internals of a chip (like registers, some control bits), while making its functionality available and modifiable.
+  •  Boundary Scan is used to implement hierarchical scan in larger subsystems, control primary inputs and observe primary outputs for scan test coverage improvement.
+
+Broadly JTAG architecture comprises of four major components –
+
+  1.  Test Access Port (TAP)
+  2.  TAP Controller
+  3.  Registers
+      3.1.  Instruction Register
+      3.2.  Data Registers
+             3.2.1.  Bypass Register
+             3.2.2.  Boundary Scan Register
+             3.2.3.  Device ID Register (optional)
+             3.2.4.  User Data Registers (optional)
+  4.  Instruction Decoder
+
+
+Figure 1: A top level view of JTAG Architecture
+
+
+
+***********************
+Power Management Techniques
+Before discussing about the different types of power management techniques, let us first look into the various degrees of freedom associated with power dissipation.
+
+Since switching power dissipation is a major component of dynamic power dissipation (Pdyn), we can say the Pdyn ∝ α.(Vdd)2.CL.f. So we can reduce the dynamic power dissipation by reducing any of these parameters listed below –
+       α = switching activity
+       Vdd = supply voltage
+       CL = total load capacitance
+       f = frequency of operation
+
+Similarly as discussed earlier, static power dissipation, Psta ∝ 1/Vth.
+       Vth = threshold voltage of the transistors
+
+It is important to note one more thing, the delay associated with transistors operation is dependent on supply voltage (Vdd) and threshold voltage (Vth), as shown below –
+
+
+Although High Vth transistors are better in terms of saving static power, it introduces more delay in the circuit operation, ultimately affecting the performance.
+
+Now let us discuss about few common power management techniques in brief.
+
+  1.  Multi Vth Design
+
+As the name suggests, inside the design we use standard cells of different threshold voltage (Vth). As discussed above the Vth can affect the performance of the design, thus a trade-off is done between the performance and power depending upon the requirement.
+
+Broadly the standard cells can be classified into 3 different categories –
+
+  •  HVT cells – Standard cells made up of transistors having high Vth. These cells consumes less power but are slow. These can be used in path where timing is not critical thus we can afford to introduce delay while saving static power.
+  •  LVT cells – Standard cells made up of transistors having low Vth. These cells are fast but consumes more power. These are used in timing critical path.
+  •  SVT cells – Standard cells made up of transistors having medium Vth. It offers a trade-off between HVT and LVT, thus is consumes less power than LVT cells but are faster than HVT cells. These can be used when we are not able to meet the timing by a small margin.
+
+  2.  Bus Encoding
+
+A considerable amount of power is dissipated for transmission of data over the system level buses. It is possible to save a significant amount of power by reducing the number of transition, i.e. switching activity at the I/O interface. It is possible to suitably encode the data before sending over the I/O interface and a decoder can be used to get back the original data at the receiving end.
+
+vlsi bus encoding concept
+
+
+*********************
+Synthesis Timing Constraints
+Topics covered –
+
+How to constrain the input, output and internal path of a single clock design
+What are the different Timing paths
+How to model clock skew and clock transition time
+How to constrain different timing paths
+Concept of virtual clock
+Concept of time budgeting
+How to constrain the input and output of a single clock design in different scenarios
+Input delay: Falling clock edge
+Input delay: Multiple input paths
+Output delay: Falling clock edge
+Output delay: Multiple output paths
+How to constrain multiple synchronous clock design
+How to apply multiple delay constraint on the same port
+Concept of base period
+How to constrain asynchronous clocks and generated clocks in a design
+How to constrain generated clocks
+How to constrain asynchronous clocks
+How to constrain logically exclusive clocks in a design
+Four different scenarios explained
+How to constrain multi-cycle path in a design
+A multi-cycle path implemented in a design
+How to constrain a multi-cycle path for setup timing
+How to constrain a multi-cycle path for hold timing
+Share this:
+
+
+
+
+
+
+
