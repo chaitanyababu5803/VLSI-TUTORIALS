@@ -1,0 +1,72 @@
+Static Timing Analysis
+Static Timing Analysis (STA)
+
+
+
+
+Static Timing Analysis is defined as: a timing verification that ensures whether the various circuit timing are meeting the various timing requirements.
+
+ 
+
+One of the most important and challenging aspect in the ASIC/FPGA design flow is timing closure. Timing closure can be viewed as timing verification of the digital circuit. A digital circuit which is closed for timing will work at specified frequency (defined by designer in timing constraints) and thus promised PPA (performance, power and area) can be achieved. Static timing Analysis is the method by which one can determine if timing closure is achieved or not by doing timing analysis on all paths within the digital circuit. As the name suggest this kind of verification of digital circuit is done statically (no simulation of the digital logic is required). Static timing analysis make use of the timing arcs (defined by technology library) between all the start and end points of the digital circuit. One must be aware that since there is no simulation involved, static timing analysis will not check for functional correctness, rather it will only focus on timing.
+
+ 
+
+Before we dig deeper into how static timing analysis works, it is valuable to get some basic knowledge of terms used later.
+
+ 
+
+Timing Arcs: The timing arcs are parameters defined in the process library for each cell which define the delays of the cell across different PVT corners. static timing analysis uses those parameters to calculate the max and min delay through any library cell. For example, for a D Flipflop, technology library will include the parameters that define the setup time, hold time and C (clock) to Q (output) time (TCQ).
+
+ 
+
+TCQ: The TCQ is defined as time it takes for data to appear on output Q once clock C is triggered (pos edge or neg edge)
+
+ 
+
+Flip Flop TCQ Timing Arc
+
+Figure 1: D – Flip Flop TCQ Timing Arc
+
+ 
+
+Setup time: The time the input D must be stable before the clock C is triggered (pos edge or neg edge) is defined as setup time. If the data is not stable at least setup time before the clock edge, output will be undetermined.
+
+ 
+
+Hold time: The time the input D must be stable after the clock C is triggered (pos edge or neg edge). If the data is not stable for at least hold time after the clock edge, output will be undetermined.
+
+ 
+
+Static timing analysis can be done on both sequential and combinatorial parts of the design. In any sequential design path there is always one launch flop (driving the data) and one latch flop (capturing the data). Combinational paths can also be considered as sequential paths by assuming a virtual clock driving a virtual launch or virtual latch flop.
+
+ 
+
+
+
+Figure 2: Sequential path
+
+ 
+
+Setup constraint: The setup constraint of any digital circuit is defined as the timing constraint so that the slowest path in the design must meet setup time of the latch flip flop.
+
+Hold constraint: The hold constraint of any digital circuit is defined as the timing constraint so that the fastest path in the design must meet hold time of the latch flip flop.
+
+If a design fulfills both setup and hold constraints, the design is said to have achieved timing closure. static timing analysis will prove/disprove the setup and hold constraints by analyzing all the timing paths in the design.
+
+ 
+
+ 
+
+Any digital design can be divided into four categories of paths for static timing analysis.
+
+ 
+
+Input to Output (I2O)
+Input to Register (I2R)
+Register to Register (R2R)
+Register to Output (R2O)
+Static timing analysis is done on all these paths one by one. Each path is analyzed separately by defining the start and end points in that path. Let us first consider static timing analysis for the R2R paths. They are simple and become basis for other paths.
+
+ 
+
