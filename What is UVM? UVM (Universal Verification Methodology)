@@ -1,0 +1,470 @@
+What is UVM?
+UVM (Universal Verification Methodology) is the industry-standard framework for verifying digital designs and systems-on-chip (SoCs) in the semiconductor industry. Built on top of SystemVerilog (IEEE 1800), UVM provides a comprehensive class library and methodology that enables engineers to create modular, reusable, and scalable verification environments.
+
+Key Characteristics:
+
+Standardized: IEEE 1800.2 standard ensures interoperability across EDA tools and companies
+Modular: Pre-built base classes (drivers, monitors, scoreboards) accelerate development
+Reusable: Verification IP (VIP) can be shared across projects and organizations
+Configurable: Factory patterns and config_db enable flexible testbench adaptation
+Industry-Adopted: Supported by all major EDA vendors (Synopsys, Cadence, Mentor, Aldec)
+   Think of UVM as... A comprehensive construction framework for verification. Just as modern buildings use standardized architectural patterns (foundations, floors, walls), UVM provides standardized verification patterns (agents, sequences, scoreboards) that proven to work across thousands of projects.
+
+ UVM in the Semiconductor Industry
+UVM has become ubiquitous in chip verification. Companies like Intel, NVIDIA, Qualcomm, ARM, and AMD use UVM to verify CPUs, GPUs, SoCs, and networking chips. A modern high-end GPU verification environment might contain 200,000+ lines of UVM code, with 50+ reusable agents for protocols like PCIe, AXI, DDR, and proprietary interfaces. Without UVM's standardization, each company would build custom frameworks—wasting engineering effort and preventing IP reuse across the industry.
+
+The Evolution: From OVM to UVM
+OVM (Open Verification Methodology) - 2008
+OVM was introduced in 2008 as an open-source verification methodology based on SystemVerilog. Developed by Mentor Graphics and Cadence, it provided the foundational concepts that later evolved into UVM:
+
+Base classes for verification components
+Transaction-Level Modeling (TLM) communication
+Phasing mechanism for testbench synchronization
+Factory pattern for configurability
+
+
+
+***************************
+−
+1.
+Introduction
+UVM Tutorial
+UVM Introduction
+UVM Installation
+Hello UVM !
+−
+2.
+UVM Base Classes
+Base Classes
+UVM Root [uvm_root]
+UVM Object [uvm_object]
+UVM Component [uvm_component]
+UVM Object Pack/Unpack
+UVM Object Compare
+UVM Object Print
+UVM Object Copy/Clone
+−
+3.
+UVM Components
+UVM Testbench Top
+UVM Test [uvm_test]
+UVM Environment [uvm_env]
+UVM Agent | uvm_agent
+UVM Driver [uvm_driver]
+UVM Monitor [uvm_monitor]
+Subscriber [uvm_subscriber]
+UVM Sequencer [uvm_sequencer]
+UVM Scoreboard
+−
+4.
+UVM Phases
+UVM Phases
+UVM Objection
+Creating user-defined phases
+−
+5.
+Sequences
+UVM Sequence [uvm_sequence]
+How to create and use a sequence
+How to execute sequences via start( )
+Executing sequence macros
+How to use `uvm_do sequence macros ?
+Sequence action macros for pre-existing items
+−
+6.
+TLM (Transaction Level Modeling)
+UVM TLM
+UVM TLM Blocking Put Port
+UVM TLM Blocking Get Port
+UVM TLM Fifo [uvm_tlm_fifo]
+UVM TLM Example
+UVM TLM Analysis Port
+UVM TLM Sockets
+Using _decl macro in TLM
+UVM TLM Nonblocking Put Port
+UVM TLM Port to Export to Imp
+UVM TLM Non-blocking Get Port
+−
+7.
+UVM Factory
+UVM Factory Override
+Configure Components
+Understanding the resource database
+UVM config database
+uvm_config_db Examples
+−
+8.
+Register Model (RAL)
+UVM Register Abstraction Layer
+UVM Register Model Classes
+UVM Register Environment
+Connecting register env
+UVM Register Backdoor Access
+UVM Register Model Example
+−
+9.
+Reporting & Utilities
+Reporting Classes
+Reporting Functions
+How to use uvm_printer
+Setting policy using uvm_comparer
+UVM Callback
+UVM Event
+UVM Event Pool
+−
+10.
+Field & Utility Macros
+UVM utility & field macros
+UVM Field Macros
+−
+11.
+Advanced Sequences
+UVM Virtual Sequence
+UVM Virtual Sequencer
+UVM Sequence Library
+UVM Sequence Arbitration
+−
+12.
+Advanced Topics
+Using get_next_item()
+Transaction Object
+Using get() and put()
+HDL access routines
+UVM Singleton Object
+−
+13.
+Guidelines
+Guide - Developing Reusable Verification Components
+Guide - Using Verification Components
+−
+14.
+UVM Examples
+UVM Verification Testbench Example
+
+
+
+****************************
+*******************************
+What is UVM?
+***********************
+*************************
+UVM (Universal Verification Methodology) is the industry-standard framework for verifying digital designs and systems-on-chip (SoCs) in the semiconductor industry. Built on top of SystemVerilog (IEEE 1800), UVM provides a comprehensive class library and methodology that enables engineers to create modular, reusable, and scalable verification environments.
+
+Key Characteristics:
+
+Standardized: IEEE 1800.2 standard ensures interoperability across EDA tools and companies
+Modular: Pre-built base classes (drivers, monitors, scoreboards) accelerate development
+Reusable: Verification IP (VIP) can be shared across projects and organizations
+Configurable: Factory patterns and config_db enable flexible testbench adaptation
+Industry-Adopted: Supported by all major EDA vendors (Synopsys, Cadence, Mentor, Aldec)
+
+UVM Tutorial
+UVM Introduction
+UVM Installation
+Hello UVM !
+−
+2.
+UVM Base Classes
+Base Classes
+UVM Root [uvm_root]
+UVM Object [uvm_object]
+UVM Component [uvm_component]
+UVM Object Pack/Unpack
+UVM Object Compare
+UVM Object Print
+UVM Object Copy/Clone
+
+class my_env extends uvm_env;
+	`uvm_component_utils (my_env)
+
+	// Note that if parent is not explicitly passed during creation, it will be null
+	function new(string name = "my_env", uvm_component parent = null);
+		super.new(name, parent);
+	endfunction
+
+endclass
+
+class my_test extends uvm_test;
+	`uvm_component_utils (my_test)
+
+	my_env 		m_env_1;
+	my_env 		m_env_2;
+	...
+
+	virtual function void build_phase(uvm_phase phase);
+		super.build_phase(phase);
+
+		// Parent is set to my_test
+		m_env_1 = my_env::type_id::create("m_env_1", this);
+
+		// Parent is null, and hence set to uvm_top
+		m_env_2 = my_env::type_id::create("m_env_2");
+	endfunction
+endclass
+
+
+******************
+
+UVM Components
+UVM Testbench Top
+UVM Test [uvm_test]
+UVM Environment [uvm_env]
+UVM Agent | uvm_agent
+UVM Driver [uvm_driver]
+UVM Monitor [uvm_monitor]
+Subscriber [uvm_subscriber]
+UVM Sequencer [uvm_sequencer]
+UVM Scoreboard
+
+// Step 1: Declare a new class that derives from "uvm_test"
+// my_test is user-given name for this class that has been derived from "uvm_test"
+class my_test extends uvm_test;
+
+    // [Recommended] Makes this test more re-usable
+    `uvm_component_utils (my_test)
+
+    // This is standard code for all components
+    function new (string name = "my_test", uvm_component parent = null);
+      super.new (name, parent);
+    endfunction
+
+    // Code for rest of the steps come here
+endclass
+
+
+***************
+
+UVM Phases
+UVM Phases
+UVM Objection
+Creating user-defined phases
+
+module driver (...);
+	task reset_phase (...);
+	task run_phase (...);
+	task check_phase (...);
+
+	initial begin
+		reset_phase ();
+		run_phase ();
+		check_phase ();
+	end
+endmodule
+
+module tb_top;
+	dut       d0   (...);
+	driver    drvr (...);
+	checker1  chk0 (...);
+	checker2  chk1 (...);
+endmodule
+
+
+***************
+
+Sequences
+UVM Sequence [uvm_sequence]
+How to create and use a sequence
+How to execute sequences via start( )
+Executing sequence macros
+How to use `uvm_do sequence macros ?
+Sequence action macros for pre-existing items
+
+// my_sequence is user-given name for this class that has been derived from "uvm_sequence"
+class my_sequence extends uvm_sequence;
+
+	// [Recommended] Makes this sequence reusable. Note that we are calling
+	// `uvm_object_utils instead of `uvm_component_utils because sequence is a uvm_transaction object
+	`uvm_object_utils (my_sequence)
+
+	// This is standard code for all components
+    function new (string name = "my_sequence");
+    	super.new (name);
+    endfunction
+endclass
+
+
+*************
+TLM (Transaction Level Modeling)
+UVM TLM
+UVM TLM Blocking Put Port
+UVM TLM Blocking Get Port
+UVM TLM Fifo [uvm_tlm_fifo]
+UVM TLM Example
+UVM TLM Analysis Port
+UVM TLM Sockets
+Using _decl macro in TLM
+UVM TLM Nonblocking Put Port
+UVM TLM Port to Export to Imp
+UVM TLM Non-blocking Get Port
+
+// Create a class data object that can be sent from one
+// component to another
+class Packet extends uvm_object;
+  rand bit[7:0] addr;
+  rand bit[7:0] data;
+
+  `uvm_object_utils_begin(Packet)
+  	`uvm_field_int(addr, UVM_ALL_ON)
+  	`uvm_field_int(data, UVM_ALL_ON)
+  `uvm_object_utils_end
+
+  function new(string name = "Packet");
+    super.new(name);
+  endfunction
+endclass
+
+
+***************
+
+UVM Factory
+UVM Factory Override
+Configure Components
+Understanding the resource database
+UVM config database
+uvm_config_db Examples
+
+uvm_config_db #(int) :: set (this, "*.wbSlaves[0]", "slave_id", 0);
+uvm_config_db #(virtual dut_if)::set (null, "uvm_test_top", "dut_if", dut_if1);
+
+uvm_resource_db #(myObj) :: set ("test", "shared_config", data, this);
+
+****************
+
+Register Model (RAL)
+UVM Register Abstraction Layer
+UVM Register Model Classes
+UVM Register Environment
+Connecting register env
+UVM Register Backdoor Access
+UVM Register Model Example
+
+// RTL representation
+
+module reg_block (...);
+	wire [31:0]     reg_ctl;
+
+	// Declare reg variables to store register field values
+	reg             ctl_en;      // Enable for the module
+	reg [2:0]       ctl_mode;    // Mode
+	reg             ctl_halt;    // Halt
+	reg             ctl_auto;    // Auto shutdown
+	reg [4:0]       ctl_speed;   // Speed control
+
+	assign reg_ctl = {16'b0, ctl_speed, 5'b0, ctl_auto, ctl_halt, ctl_mode, ctl_en};
+
+	// Logic for getting individual fields from the bus
+	...
+endmodule
+
+***************
+
+Reporting & Utilities
+Reporting Classes
+Reporting Functions
+How to use uvm_printer
+Setting policy using uvm_comparer
+UVM Callback
+UVM Event
+UVM Event Pool
+$display ("%t addr = 0x%0h data = 0x%0h", addr, data);
+
+************
+.
+Field & Utility Macros
+UVM utility & field macros
+UVM Field Macros
+
+class ABC extends uvm_object;
+
+	// Register this user defined class with the factory
+	`uvm_object_utils(ABC)
+
+	function new(string name = "ABC");
+		super.new(name);
+	endfunction
+endclass
+
+
+***********
+Advanced Sequences
+UVM Virtual Sequence
+UVM Virtual Sequencer
+UVM Sequence Library
+UVM Sequence Arbitration
+−
+12.
+Advanced Topics
+Using get_next_item()
+Transaction Object
+Using get() and put()
+HDL access routines
+UVM Singleton Object
+
+
+class my_virtual_seq extends uvm_sequence;
+	`uvm_object_utils (my_virtual_seq)
+	`uvm_declare_p_sequencer (my_virtual_sequencer)
+
+	function new (string name = "my_virtual_seq");
+		super.new (name);
+	endfunction
+
+	apb_rd_wr_seq 	m_apb_rd_wr_seq;
+	wb_reset_seq 	m_wb_reset_seq;
+	pcie_gen_seq 	m_pcie_gen_seq;
+
+	task pre_body();
+		m_apb_rd_wr_seq = apb_rd_wr_seq::type_id::create ("m_apb_rd_wr_seq");
+		m_wb_reset_seq  = wb_reset_seq::type_id::create ("m_wb_reset_seq");
+		m_pcie_gen_seq  = pcie_gen_seq::type_id::create ("m_pcie_gen_seq");
+	endtask
+
+	task body();
+		...
+		m_apb_rd_wr_seq.start (p_sequencer.m_apb_seqr);
+		fork
+			m_wb_reset_seq.start (p_sequencer.m_wb_seqr);
+			m_pcie_gen_seq.start (p_sequencer.m_pcie_seqr);
+		join
+		...
+	endtask
+endclass
+
+
+
+**************
+class my_driver extends uvm_driver #(my_data);
+	`uvm_component_utils (my_driver)
+
+   virtual task run_phase(uvm_phase phase);
+      super.run_phase(phase);
+
+      // 1. This task will get an item from the sequencer using get_next_item()
+      `uvm_info ("DRIVER", $sformatf ("Waiting for data from sequencer"), UVM_MEDIUM)
+      seq_item_port.get_next_item(req);
+
+      // 2. For simplicity, lets just assume the driver drives the received packet
+      // during this time and consumes 20ns to complete driving the transaction
+      `uvm_info ("DRIVER", $sformatf ("Start driving tx addr=0x%0h data=0x%0h", req.addr, req.data), UVM_MEDIUM)
+      #20;
+
+      // 3. After driver has finished the transaction, it has to let the sequencer know
+      // by calling item_done()
+      `uvm_info ("DRIVER", $sformatf ("Finish driving tx addr=0x%0h data=0x%0h", req.addr, req.data), UVM_MEDIUM)
+      seq_item_port.item_done();
+   endtask
+
+
+**********************
+**************************
+1. Testbench Components
+UVM provides base classes that verification engineers extend to create custom components:
+
+uvm_driver: Converts transactions into pin-level DUT stimulus
+uvm_monitor: Observes DUT signals and reconstructs transactions
+uvm_scoreboard: Compares actual DUT behavior against expected results
+uvm_agent: Groups driver, monitor, and sequencer for a protocol interface
+uvm_env: Top-level container for all verification components
+uvm_test: Defines test scenarios and controls simulation flow
+
+
