@@ -1,0 +1,306 @@
+UVM Testbench Example 1
+*********************************
+https://www.chipverify.com/uvm/uvm-testbench-example-1
+*********************************
+Sequence Item
+UVM Driver
+UVM Monitor
+UVM Agent
+UVM Scoreboard
+UVM Environment
+UVM Test
+UVM Sequence
+A SystemVerilog based testbench was explored before to verify a simple register/memory element design that stores write data and gives back read data from requested addresses. Let us build a similar testbench using UVM components so that you can compare it with a traditional SystemVerilog testbench.
+
+uvm testbench example
+Sequence Item
+A data class called reg_item is defined to hold random input address and write data and will be randomized inside the sequence before it is sent to the driver. The class also has utility macros to help with common requirements like print, copy and clone.
+
+class reg_item extends uvm_sequence_item;
+  rand bit [`ADDR_WIDTH-1:0]  	addr;
+  rand bit [`DATA_WIDTH-1:0] 	wdata;
+  rand bit 						wr;
+  bit [`DATA_WIDTH-1:0] 		rdata;
+
+  // Use utility macros to implement standard functions
+  // like print, copy, clone, etc
+  `uvm_object_utils_begin(reg_item)
+  	`uvm_field_int (addr, UVM_DEFAULT)
+  	`uvm_field_int (wdata, UVM_DEFAULT)
+  	`uvm_field_int (rdata, UVM_DEFAULT)
+  	`uvm_field_int (wr, UVM_DEFAULT)
+  `uvm_object_utils_end
+
+  virtual function string convert2str();
+    return $sformatf("addr=0x%0h wr=0x%0h wdata=0x%0h rdata=0x%0h", addr, wr, wdata, rdata);
+  endfunction
+
+  function new(string name = "reg_item");
+    super.new(name);
+  endfunction
+endclass
+UVM Driver
+The UVM driver extends from uvm_driver and is parameterized to accept an object of type reg_item. It also recieves handle to a virtual interface that is used to toggle pins of the DUT. The driver uses standard method calls get_next_item and item_done to communicate with its sequencer.
+
+class driver extends uvm_driver #(reg_item);
+  `uvm_component_utils(driver)
+  function new(string name = "driver", uvm_component parent=null);
+    super.new(name, parent);
+  endfunction
+
+  virtual reg_if vif;
+
+  virtual function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    if (!uvm_config_db#(virtual reg_if)::get(this, "", "reg_vif", vif))
+      `uvm_fatal("DRV", "Could not get vif")
+  endfunction
+
+  virtual task run_phase(uvm_phase phase);
+    super.run_phase(phase);
+    forever begin
+      reg_item m_item;
+      `uvm_info("DRV", $sformatf("Wait for item from sequencer"), UVM_LOW)
+      seq_item_port.get_next_item(m_item);
+      drive_item(m_item);
+      seq_item_port.item_done();
+    end
+  endtask
+
+  virtual task drive_item(reg_item m_item);
+      vif.sel <= 1;
+      vif.addr 	<= m_item.addr;
+      vif.wr 	<= m_item.wr;
+      vif.wdata <= m_item.wdata;
+      @ (posedge vif.clk);
+      while (!vif.ready)  begin
+        `uvm_info("DRV", "Wait until ready is high", UVM_LOW)
+        @(posedge vif.clk);
+      end
+
+      vif.sel <= 0;
+  endtask
+endclass
+UVM Monitor
+The UVM monitor is derived from uvm_monitor and has a virtual interface handle to listen to activity on the given interface. It tries to decode pin level activity into a protocol packet which it can send out to other testbench components. In this case, it tries to see if address and data pairs are available on the DUT interface, capture them into a class object of type reg_item and send out via an analysis port.
+
+Since it has to decode and capture any activity happening on the DUT interface, it has to run for as long as the simulation is active and hence it is placed inside a forever loop.
+
+
+class monitor extends uvm_monitor;
+  `uvm_component_utils(monitor)
+  function new(string name="monitor", uvm_component parent=null);
+    super.new(name, parent);
+  endfunction
+
+  uvm_analysis_port  #(reg_item) mon_analysis_port;
+  virtual reg_if vif;
+  semaphore sema4;
+
+  virtual function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    if (!uvm_config_db#(virtual reg_if)::get(this, "", "reg_vif", vif))
+      `uvm_fatal("MON", "Could not get vif")
+    sema4 = new(1);
+    mon_analysis_port = new ("mon_analysis_port", this);
+  endfunction
+
+  virtual task run_phase(uvm_phase phase);
+    super.run_phase(phase);
+    // This task monitors the interface for a complete
+    // transaction and writes into analysis port when complete
+    forever begin
+      @ (posedge vif.clk);
+      if (vif.sel) begin
+        reg_item item = new;
+        item.addr = vif.addr;
+        item.wr = vif.wr;
+        item.wdata = vif.wdata;
+
+        if (!vif.wr) begin
+          @(posedge vif.clk);
+        	item.rdata = vif.rdata;
+        end
+        `uvm_info(get_type_name(), $sformatf("Monitor found packet %s", item.convert2str()), UVM_LOW)
+        mon_analysis_port.write(item);
+      end
+    end
+  endtask
+endclass
+UVM Agent
+The role of a UVM agent is to encapsulate the sequencer, driver and monitor into a single container. The sequencer is responsible for acting on a given sequence and send the driver with data objects. It is parameterized to accept objects of type reg_item and its seq_item_port is connected to the driver's seq_item_export.
+
+class agent extends uvm_agent;
+  `uvm_component_utils(agent)
+  function new(string name="agent", uvm_component parent=null);
+    super.new(name, parent);
+  endfunction
+
+  driver 		d0; 		// Driver handle
+  monitor 		m0; 		// Monitor handle
+  uvm_sequencer #(reg_item)	s0; 		// Sequencer Handle
+
+  virtual function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    s0 = uvm_sequencer#(reg_item)::type_id::create("s0", this);
+    d0 = driver::type_id::create("d0", this);
+    m0 = monitor::type_id::create("m0", this);
+  endfunction
+
+  virtual function void connect_phase(uvm_phase phase);
+    super.connect_phase(phase);
+    d0.seq_item_port.connect(s0.seq_item_export);
+  endfunction
+endclass
+UVM Scoreboard
+The scoreboard receives a data object through its uvm_analysis_imp port from the monitor. The scoreboard receives data packets from the monitor for both write and read operations and hence it can predict what the read data should be for a given address. As soon as the scoreboard receives an item, its write method will be executed which in turn runs the checker and predicts the result.
+
+This scoreboard has an internal array which is used to store data for different addresses and hence mimics design behavior. This is also called as a reference model. Reference models may be as simple as this or very complicated based on design functionality.
+
+Discover more
+Electronics online forum
+Verilog gate modeling
+Power analysis software
+class scoreboard extends uvm_scoreboard;
+  `uvm_component_utils(scoreboard)
+  function new(string name="scoreboard", uvm_component parent=null);
+    super.new(name, parent);
+  endfunction
+
+  reg_item refq[`DEPTH];
+  uvm_analysis_imp #(reg_item, scoreboard) m_analysis_imp;
+
+  virtual function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    m_analysis_imp = new("m_analysis_imp", this);
+  endfunction
+
+  virtual function write(reg_item item);
+     if (item.wr) begin
+        if (refq[item.addr] == null)
+          refq[item.addr] = new;
+
+        refq[item.addr] = item;
+       `uvm_info(get_type_name(), $sformatf("Store addr=0x%0h wr=0x%0h data=0x%0h", item.addr, item.wr, item.wdata), UVM_LOW)
+      end
+
+        if (!item.wr) begin
+          if (refq[item.addr] == null)
+            if (item.rdata != 'h1234)
+              `uvm_error (get_type_name(), $sformatf("First time read, addr=0x%0h exp=1234 act=0x%0h",
+                                                     item.addr, item.rdata))
+          	else
+              `uvm_info(get_type_name(), $sformatf("PASS! First time read, addr=0x%0h exp=1234 act=0x%0h",
+                                                   item.addr, item.rdata), UVM_LOW)
+          else
+            if (item.rdata != refq[item.addr].wdata)
+              `uvm_error (get_type_name(), $sformatf("addr=0x%0h exp=0x%0h act=0x%0h",
+                                                    item.addr, refq[item.addr].wdata, item.rdata))
+           else
+             `uvm_info(get_type_name(), $sformatf("PASS! addr=0x%0h exp=0x%0h act=0x%0h",
+                       item.addr, refq[item.addr].wdata, item.rdata), UVM_LOW)
+        end
+  endfunction
+endclass
+UVM Environment
+The UVM environment is responsible for instantiating and connecting all testbench components. Here, analysis port from the agent's monitor is connected to the analysis implementation port in scoreboard. This connection allows the scoreboard to receive packets whenever the monitor pushes new data into the analysis port.
+
+class env extends uvm_env;
+  `uvm_component_utils(env)
+  function new(string name="env", uvm_component parent=null);
+    super.new(name, parent);
+  endfunction
+
+  agent 		a0; 		// Agent handle
+  scoreboard	sb0; 		// Scoreboard handle
+
+  virtual function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    a0 = agent::type_id::create("a0", this);
+    sb0 = scoreboard::type_id::create("sb0", this);
+  endfunction
+
+  virtual function void connect_phase(uvm_phase phase);
+    super.connect_phase(phase);
+    a0.m0.mon_analysis_port.connect(sb0.m_analysis_imp);
+  endfunction
+endclass
+UVM Test
+The test instantiates an environment, sets up virtual interface handles to sub components and starts a top level sequence. In this simple example, we have chosen to also reset the DUT using a reset task, after which a sequence of type gen_item_seq is started on the agent's sequencer.
+
+Since the sequence consumes simulation time and all other testbench components have to run as long as the sequence is active, it is important to raise and drop objections appropriately. Note that the sequence has a random variable to represent the number of packets sent to the driver and can be constrained appropriately to test more combinations of address and data.
+
+Discover more
+Verification methodology training
+ASIC design software
+Electronics prototyping kit
+class test extends uvm_test;
+  `uvm_component_utils(test)
+  function new(string name = "test", uvm_component parent=null);
+    super.new(name, parent);
+  endfunction
+
+  env e0;
+  virtual reg_if vif;
+
+  virtual function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    e0 = env::type_id::create("e0", this);
+    if (!uvm_config_db#(virtual reg_if)::get(this, "", "reg_vif", vif))
+      `uvm_fatal("TEST", "Did not get vif")
+
+      uvm_config_db#(virtual reg_if)::set(this, "e0.a0.*", "reg_vif", vif);
+  endfunction
+
+  virtual task run_phase(uvm_phase phase);
+    gen_item_seq seq = gen_item_seq::type_id::create("seq");
+    phase.raise_objection(this);
+    apply_reset();
+
+    seq.randomize() with {num inside {[20:30]}; };
+    seq.start(e0.a0.s0);
+    #200;
+    phase.drop_objection(this);
+  endtask
+
+  virtual task apply_reset();
+    vif.rstn <= 0;
+    repeat(5) @ (posedge vif.clk);
+    vif.rstn <= 1;
+    repeat(10) @ (posedge vif.clk);
+  endtask
+endclass
+UVM Sequence
+Last but not the least, we have the main sequence that forms the stimulus and randomizer aspect of the testbench. The sequence when started on a sequencer gets the body method executed which ultimately randomizes address/data and send them to the driver.
+
+class gen_item_seq extends uvm_sequence;
+  `uvm_object_utils(gen_item_seq)
+  function new(string name="gen_item_seq");
+    super.new(name);
+  endfunction
+
+  rand int num; 	// Config total number of items to be sent
+
+  constraint c1 { soft num inside {[2:5]}; }
+
+  virtual task body();
+    for (int i = 0; i < num; i ++) begin
+    	reg_item m_item = reg_item::type_id::create("m_item");
+    	start_item(m_item);
+    	m_item.randomize();
+    	`uvm_info("SEQ", $sformatf("Generate new item: "), UVM_LOW)
+    	m_item.print();
+      	finish_item(m_item);
+    end
+    `uvm_info("SEQ", $sformatf("Done generation of %0d items", num), UVM_LOW)
+  endtask
+endclass
+uvm testbench example 2
+Output
+UVM_INFO @ 0: reporter [RNTST] Running test test...
+UVM_INFO testbench.sv(80) @ 0: uvm_test_top.e0.a0.d0 [DRV] Wait for item from sequencer
+UVM_INFO testbench.sv(52) @ 290: uvm_test_top.e0.a0.s0@@seq [SEQ] Generate new item: addr=0xa4 wr=0x0 wdata=0x9783 rdata=0x0
+UVM_INFO testbench.sv(80) @ 310: uvm_test_top.e0.a0.d0 [DRV] Wait for item from sequencer
+UVM_INFO testbench.sv(52) @ 310: uvm_test_top.e0.a0.s0@@seq [SEQ] Generate new item: addr=0x1b wr=0x1 wdata=0x3025 rdata=0x0
+UVM_INFO testbench.sv(141) @ 330: uvm_test_top.e0.a0.m0 [monitor] Monitor found packet addr=0xa4 wr=0x0 wdata=0x9783 rdata=0x1234
+UVM_INFO testbench.sv(182) @ 330: uvm_test_top.e0.sb0 [scoreboard] PASS! First time read, addr=0xa4 exp=1234 act=0x1234
